@@ -131,4 +131,7 @@ $RECYCLE.BIN/
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
+### Maven ###
+target/
+
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse,windows
