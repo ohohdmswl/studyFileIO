@@ -151,13 +151,14 @@ $(document).ready(function(){
  */
 function boardPage(pnum) {
 	
+	//pnum이 없으면 1페이지로 설정
 	pnum = pnum || 1;
 	
     //tb 내용 삽입
 	$.ajax({
 		url: "${pageContext.request.contextPath}/pagingExcelBoardLoad.do",
 		method:"POST",
-		data:{pageIndex : pnum},
+		data:{pageIndex : pnum},	//클릭한 페이지 인덱스
 		success:function(result){
 			
 			console.log("ajax 내용물 확인 : " + JSON.stringify(result));
@@ -192,9 +193,14 @@ function boardPage(pnum) {
 			
 			
 			// 페이지네이션 숫자 -> el로 못가져옴^^ result에서 가져와라
+			// 페이징헬퍼에서 자동으로 계산해주는 페이지네이션 범위 값 : navigatepageNums
 			for (var i = 0; i < result.pageInfo.navigatepageNums.length; i++) {
-			    console.log("페이지네이션 숫자 뽑기 : " + result.pageInfo.navigatepageNums[i]);
-			    if (result.pageInfo.pageNum == result.pageInfo.navigatepageNums[i]) {
+			    console.log("[페이지네이션 숫자 확인] : " + result.pageInfo.navigatepageNums[i]);
+			    
+			 	// pageNum : 현재 페이지
+			 	// ajax로 받아온 현재페이지 값과 페이지네이션 범위 값의 값이 같을 때, 페이지네이션 css 위한 class 추가 
+			 	// 현재페이지와 페이지네이션 범위 값의 값이 다를 때, 반복문 통해 페이지네이션 블록 개수만큼 값을 li로 표출
+			    if (result.pageInfo.pageNum == result.pageInfo.navigatepageNums[i]) {	 
 			        pagination += "<li><a href='#' onclick='boardPage(" + result.pageInfo.navigatepageNums[i] + ")' class='is-active'><strong>" + result.pageInfo.navigatepageNums[i] + "</strong></a></li>";
 			    } else {
 			        pagination += "<li><a href='#' onclick='boardPage(" + result.pageInfo.navigatepageNums[i] + ")'>" + result.pageInfo.navigatepageNums[i] + "</a></li>";
@@ -230,27 +236,17 @@ function boardPage(pnum) {
  * 파일 그룹번호 콤보박스 list 조회
  */
 function selectfileList() {
-	
-// 	 $('#fileGList option').remove();
-// 	 $('#fileList option').remove();
-	
 	$.ajax({
 		url: "${pageContext.request.contextPath}/selectFileList.do",
 		method:"POST",
 		data:{},
 		success:function(result){
-			
 			console.log("ajax 내용물 확인  selectfileList : " + JSON.stringify(result));
-			
 			
 			for(var i=0; i<result.fileList.length; i++){
 				var filegroup = result.fileList[i].file_group;
 				$("#file_group").append("<option value='" + filegroup + "'>"+ filegroup +"</option>");
 			}
-			
-			
-
-			
 		}//success
 	})
 }			
@@ -259,18 +255,12 @@ function selectfileList() {
  * 파일 상세 콤보박스 list 조회
  */
 function selectFileDetailList(Gnum) {
-	
-// 	 $('#fileGList option').remove();
-// 	 $('#fileList option').remove();
-	
 	$.ajax({
 		url: "${pageContext.request.contextPath}/selectFileDetailList.do",
 		method:"POST",
 		data:{file_group : Gnum},
 		success:function(result){
-			
 			console.log("ajax 내용물 확인  selectfileList : " + JSON.stringify(result));
-			
 			
 			for(var i=0; i<result.fileDList.length; i++){
 				var filegroup = result.fileDList[i].file_group;
@@ -278,14 +268,12 @@ function selectFileDetailList(Gnum) {
 				var original_name = result.fileDList[i].original_name;
 				$("#file_no").append("<option value='" + fileno + "'>"+ original_name +"</option>");
 			}
-			
-			
-
-			
 		}//success
 	})
 }			
 			
+// 파일그룹번호 값 변경될 경우 이전 옵션 값 다 지움
+// 파일그룹번호  null, 빈 값일 때 파일list 옵션 변경 
 $("#file_group").on('change',function(){
 	  var Gnum = $("#file_group").val();
 	  $('#file_no option').remove();
@@ -295,24 +283,23 @@ $("#file_group").on('change',function(){
 	  } else {
 	  //파일 그룹넘버 선택 후 상세 콤보박스 표출 함수
 	  selectFileDetailList(Gnum);
-		  
 	  }
 });
 
+//submit해서 파일 다운로드 진행
+//selectFileDownload.do
 function selectFileDownload() {
 
-if( $('#file_group').val() == ''){
-	alert("파일 구분을 선택해주세요");
-}
-
-groupNo = $('#file_group').val();
-fileNo = $('#file_no').val();
-
-console.log("값 확인 : " + groupNo + "   " + fileNo);
-
-var formDown = $("form[name='fileDownForm']");
-
-formDown.submit();
+	if( $('#file_group').val() == ''){
+		alert("파일 구분을 선택해주세요");
+	}
+	
+	groupNo = $('#file_group').val();
+	fileNo = $('#file_no').val();
+	console.log("[file_group, file_no 값 확인] : " + groupNo + "   " + fileNo);
+	
+	var formDown = $("form[name='fileDownForm']");
+	formDown.submit();
 
 } 
 
@@ -327,8 +314,7 @@ $("#downBTN").on('click',function(){
 	
 	groupNo = $('#file_group').val();
 	fileNo = $('#file_no').val();
-	
-	console.log("값 확인 : " + groupNo + "   " + fileNo);
+	console.log("[file_group, file_no 값 확인] : " + groupNo + "   " + fileNo);
 
 	var downUrl = "${pageContext.request.contextPath}/selectFileDownloadAjax.do";
 	
@@ -486,6 +472,7 @@ function getFileName(contentDisposition) {
 
 /**
  * map(순서보장X), 헤더 값 일일이 삽입해서 진행
+ * excelJS 사용
  */
 function excelDownload1() {
 	
@@ -496,7 +483,6 @@ function excelDownload1() {
 		method:"POST",
 		data:{},
 		success:function(result){
-			
 			console.log("ajax 엑셀 내용물 확인 : " + JSON.stringify(result));
 			
 			alert("날짜 데이터 재확인 : " + new Date(result.list[0]['board_date']));
@@ -521,41 +507,41 @@ function excelDownload1() {
 			//작업할 엑셀 시트
 			var worksheet =  workbook.getWorksheet ( 'SheetOne' ) ;
 			
+			//헤더 값 가져올 테입르 선택
 			var thisTb = document.getElementById('boardTb');
 			
 			//헤더 값 가져오기
 			var rowList = thisTb.rows[0];	//헤더(표의 0번째 줄)
-			var rowListCnt= rowList.childElementCount	//컬럼 개수(헤더 컬럼 개수)
+			var rowListCnt= rowList.childElementCount	//컬럼 개수(헤더 컬럼 개수), 가져온 헤더의 자식요소 개수
 			
-			//헤더 배열 값
+			//헤더 배열 값, 헤더 값 반복문 통해 가져오기
 			var headColumns = [];
 			for (var j = 0; j < rowListCnt; j++){
 				headColumns.push(rowList.cells[j].innerHTML);
 			}
 			console.log("헤더 배열 확인 : " + headColumns);
 			
-			//헤더 입력
+			//헤더 작성(addRow : 행추가)
 			worksheet.addRow(headColumns);
 			
 			//본문 내용 가져오기
 			//list 확인
 			console.log("ajax 결과 사이즈 체크 : " + result.list.length);
-			console.log("리스트 키 확인 : " + Object.keys(result.list[0]));
-			console.log("리스트 키 확인 : " + JSON.stringify(Object.keys(result.list[0])));
+			console.log("리스트 키 확인 : " + Object.keys(result.list[0]));	//rownum,board_title,board_date,board_writer,board_hit
+			console.log("리스트 키 확인 : " + JSON.stringify(Object.keys(result.list[0])));	//["rownum","board_title","board_date","board_writer","board_hit"]
 			
 			var headColumnNm = [];
-			headColumnNm.push(Object.keys(result.list[0]));
-			
+			headColumnNm.push(Object.keys(result.list[0]));	//rownum,board_title,board_date,board_writer,board_hit
 			console.log("헤더컬럼 : " + headColumnNm);
 			
-			
 			//본문 입력
+			//result.list.length : 게시글 총 개수
 			for(var c = 0; c < result.list.length; c++){
 				
-				/*그냥 map 사용, 컬럼명 직접 삽입해서 추출(날짜 포멧 변환)*/
+				//그냥 map 사용, 컬럼명 직접 삽입해서 추출(날짜 포멧 변환)
 				//아래 dateFormat 함수로 날짜포맷 변경
 				var numberToStr = dateFormat(result.list[c]['board_date']); 
-				//아예 컬럼명 알박기
+				//아예 컬럼명 박제해서 값 가져올 수 있도록 하기
 				worksheet.addRow([result.list[c]['rownum'], result.list[c]['board_title'], result.list[c]['board_writer'],  numberToStr, result.list[c]['board_hit'] ]);
 			}
 			
@@ -576,15 +562,14 @@ function excelDownload1() {
 			    var datetime = year + month  + day + '_' + hours + minutes  + seconds;
 			    
 			    saveAs(blob, '엑셀제목_' + datetime + '.xlsx');
-			});
-			
-			
+				});
 			}//success
 		})//ajax	
 }
 
 /**
  * map(순서보장X), 컬럼명 배열로 받아서 진행, 컬럼명에 date있을 경우 포맷진행 
+ * excelJS 사용
  */
 function excelDownload2() {
 	
@@ -595,7 +580,6 @@ function excelDownload2() {
 		method:"POST",
 		data:{},
 		success:function(result){
-			
 			console.log("ajax 엑셀 내용물 확인 : " + JSON.stringify(result));
 			
 			/*엑셀 다운로드 */
@@ -636,27 +620,29 @@ function excelDownload2() {
 			//본문 내용 가져오기
 			var headColumnNm = [];
 			headColumnNm.push(Object.keys(result.list[0]));
-			
 			console.log("헤더컬럼 : " + headColumnNm);
 			
-			//컬럼병 배열로 받아서 추출하기
+			//컬럼명 배열로 받아서 추출하기
 			var dbCol = ['rownum','board_title','board_writer','board_date','board_hit'];
+			//'date'가 들어가는 요소의 인덱스 찾기
 			var resultIndex = findIndex(dbCol, 'date');	//함수 결과 확인 : 3
 			
 			//본문 입력
+			//c : 총 게시글 수, d : 컬럼 개수
 			for(var c = 0; c < result.list.length; c++){
-
 				var temp = [];
 				for(var d = 0; d < dbCol.length; d++) {
+					//각 컬럼명 반복문으로 찾기
 					var colKey = dbCol[d];
 					
 					/*그냥 map 사용, 컬럼명 직접 삽입해서 추출(날짜 포멧 변환)*/
 					//아래 dateFormat 함수로 날짜포맷 변경
+					//ajax로 반환된 게시글 정보 list를 순서대로 접근하며 접근한 게시글 정보 중 컬럼이 resultIndex 인 것 -> 날짜 포맷 변경
 					var numberToStr = dateFormat(result.list[c][dbCol[resultIndex]]); 
 					
-					if(d == resultIndex){
+					if(d == resultIndex){	//d가 날짜 표출하는 컬럼일 경우 -> 날짜포맷 변경한 값 입력
 						temp.push(numberToStr);
-					} else {
+					} else {	//날짜 아닌 경우 컬럼 값 그대로 입력
 						temp.push(result.list[c][colKey]);
 					}
 				}//innerfor

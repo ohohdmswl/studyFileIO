@@ -118,14 +118,8 @@ public class PagingExcel {
 	@Resource(name = "propertiesService")
 	protected EgovPropertyService propertiesService;
 
-	/** Validator */
-	@Resource(name = "beanValidator")
-	protected DefaultBeanValidator beanValidator;
-
-	
    // Set logger
    private final Logger logger = LogManager.getLogger(this.getClass());
-
    // Get class name for logger
    private final String className = this.getClass().toString();
 	
@@ -139,27 +133,29 @@ public class PagingExcel {
 	@RequestMapping(value = "/pagingExcelLoad.do")
 	public String selectSampleList(@ModelAttribute("pagingExcelVO") PagingExcelVO pagingExcelVO, ModelMap model) throws Exception {
 
-		logger.info("+ Start " + className + ".bigInsert");
-		logger.info("페이지 로드 확인");
-		
-//		List<Map<Object, Object>> resultList = pagingExcelService.selectDataList();
-//		logger.info("결과 확인 : " + resultList);
-//		
-//		PageHelper.startPage(pagingExcelVO.getPageIndex(),pagingExcelVO.getPageUnit());
-//		PageInfo<Map<Object,Object>> pageInfo = new PageInfo<Map<Object,Object>>(pagingExcelService.selectPDataList(pagingExcelVO), 10);
-//
-//		logger.info("페이지네이션 세부 확인 : " + pagingExcelVO.getPageIndex());
-//		logger.info("페이지네이션 확인 : " + pagingExcelVO.getPageUnit());
-//		logger.info("페이지네이션 확인 : " + pageInfo);
-		
-//		model.addAttribute("pageInfo",pageInfo);		
+		logger.info("+ Start " + className + "페이지 로드 확인");
 
+		/* PageHelper + model 사용
+		 * 
+		List<Map<Object, Object>> resultList = pagingExcelService.selectDataList();
+		logger.info("결과 확인 : " + resultList);
+		
+		PageHelper.startPage(pagingExcelVO.getPageIndex(),pagingExcelVO.getPageUnit());
+		PageInfo<Map<Object,Object>> pageInfo = new PageInfo<Map<Object,Object>>(pagingExcelService.selectPDataList(pagingExcelVO), 10);
+		logger.info("페이지네이션 세부 확인 : " + pagingExcelVO.getPageIndex());
+		logger.info("페이지네이션 확인 : " + pagingExcelVO.getPageUnit());
+		logger.info("페이지네이션 확인 : " + pageInfo);
+		
+		model.addAttribute("pageInfo",pageInfo);		
+		 */
 		
 		return "sample/PagingExcel";
 	}
 	
 	/**
-	 * 표 페이지네이션(pageHelper)
+	 * 표, 페이지네이션(pageHelper)
+	 * 표 내용과 페이지네이션을 Ajax로 받아 표출
+	 * 클릭한 페이지 인덱스 인자로 받아오면 페이징헬퍼가 자동으로 조회가능하게 해줌
 	 * @param pagingExcelVO
 	 * @param model
 	 * @return
@@ -169,14 +165,16 @@ public class PagingExcel {
 	@RequestMapping(value = "/pagingExcelBoardLoad.do")
 	public Map<String, Object> selectBoardList(@ModelAttribute("pagingExcelVO") PagingExcelVO pagingExcelVO, ModelMap model) throws Exception {
 
-		logger.info("페이지 로드 ajax 확인");
-		
 		Map<String, Object> result = new HashMap<String, Object>();
 		
+		/*startPage : 페이지 지정시 사용 메소드 (조회하고 싶은 페이지 번호 , 페이지 당 보여줄 아이템 개수_게시글 개수)*/
 		PageHelper.startPage(pagingExcelVO.getPageIndex(),pagingExcelVO.getPageUnit());
-		PageInfo<Map<Object,Object>> pageInfo = new PageInfo<Map<Object,Object>>(pagingExcelService.selectPDataList(pagingExcelVO), 10);
 		
-		logger.info("페이지네이션 확인  ajax: " + pageInfo);
+		/*페이지네이션에 필요한 값을 알아서 계산해서 pageInfo에 담아줌
+		페이지네이션 블록 개수 : 10으로 설정
+		PageInfo(게시판 정보 List, 페이지네이션 블록개수)*/
+		PageInfo<Map<Object,Object>> pageInfo = new PageInfo<Map<Object,Object>>(pagingExcelService.selectPDataList(pagingExcelVO), 10);
+		logger.info("chk pagination ajax: " + pageInfo);
 		
 		result.put("pageInfo", pageInfo);
 		
@@ -185,6 +183,7 @@ public class PagingExcel {
 
 	/**
 	 * 표 액샐 다운로드(exceljs, filesaver)
+	 * excelDownload1, excelDownload2 연결
 	 * @param pagingExcelVO
 	 * @param model
 	 * @return
@@ -206,6 +205,7 @@ public class PagingExcel {
 	
 	/**
 	 * 표 액샐 다운로드(exceljs, filesaver), LinkedHashMap(순서보장)
+	 * excelDownload3, excelDownload4 연결
 	 * @param pagingExcelVO
 	 * @param model
 	 * @return
@@ -238,8 +238,6 @@ public class PagingExcel {
 		        }
 		    }
 		}
-		
-		logger.info("되냐되냐" + resultList);
 		*/
 		result.put("list", resultList);
 		
@@ -249,6 +247,7 @@ public class PagingExcel {
 	
 	/**
 	 * 표 액샐 다운로드(Poi)
+	 * excelDownload5
 	 * @param pagingExcelVO
 	 * @param model
 	 * @return
