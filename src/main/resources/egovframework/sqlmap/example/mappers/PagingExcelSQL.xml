@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.sample.service.impl.PagingExcelSQL">
+
+	<select id="selectDataList" resultType="map">
+		select 		(ROW_NUMBER() OVER(order by board_no)) AS rownum, board_title, board_writer, TO_CHAR(board_date , 'YYYY-MM-DD HH24:MI')AS board_date, board_hit
+		from		tb_board
+	</select>
+
+	<select id="selectPDataList" resultType="map">
+		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_title, board_writer, TO_CHAR(board_date , 'YYYY-MM-DD HH24:MI')AS board_date, board_hit
+		from		tb_board
+	</select>
+
+	<select id="selectExcelDownload" resultType="map">
+		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_title, board_writer, board_date, board_hit
+		from		tb_board
+	</select>
+	
+	<select id="selectExcelDownloadLinked" resultType="java.util.LinkedHashMap" >
+<!-- 		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_title, board_writer, board_date, board_hit -->
+<!-- 		from		tb_board -->
+		
+		<!-- 2. 쿼리에서 Tochar 사용해서 처음부터 String으로 받아오기 -->
+		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_title, board_writer, TO_CHAR(board_date , 'YYYY-MM-DD HH24:MI')AS board_date , board_hit
+		from		tb_board
+	</select>
+
+	<select id="selectExcelDownloadList" resultType="egovframework.example.sample.service.PagingExcelVO">
+		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_title, board_writer, board_date, board_hit
+		from		tb_board
+	</select>
+	
+	
+	<insert id="insertExcel" >
+
+        INSERT INTO tb_boardUpload (
+                board_no, 
+                board_title, 
+                board_writer, 
+                board_date, 
+                board_hit
+                ) 
+                VALUES 
+
+            <foreach collection="excelContent" item="item" separator=",">    
+                (
+                #{item.A}::INTEGER, 
+                #{item.B},
+                #{item.C},
+                #{item.D}::DATE,
+                #{item.E}::INTEGER
+                )
+            </foreach>
+    </insert>
+	
+	<select id="selectFileGroupNo" resultType="int">
+			select nextval('file_group_seq')
+	</select>
+	
+	
+	
+	
+	<insert id="insertFileUp" parameterType="egovframework.example.sample.service.FileVO">
+        
+        INSERT INTO tb_board_fileupload (
+                file_group, 
+                file_no, 
+                original_name, 
+                file_name, 
+                file_extension, 
+                reg_id, 
+                reg_date, 
+                file_path
+                ) 
+                VALUES 
+                (
+				#{file_group},					
+                (SELECT COALESCE(MAX(file_no),0)+1 FROM tb_board_fileupload WHERE file_group = #{file_group}), 
+                #{original_name},
+                #{file_name},
+                #{file_extension},
+                 'writer',
+                  now()::timestamp,
+                #{file_path}
+                )
+    </insert>
+	
+	<select id="selectfileList" resultType="map">
+		SELECT 		DISTINCT  file_group
+		FROM 		tb_board_fileupload
+		ORDER BY 	file_group
+	</select>
+	
+	<select id="selectfileDetailList" parameterType="egovframework.example.sample.service.FileVO" resultType="map">
+		SELECT 		file_group, file_no, original_name, file_name, file_extension, reg_id, reg_date, file_path
+		FROM 		tb_board_fileupload
+		WHERE 		file_group = #{file_group}
+		ORDER BY 	file_no
+	</select>
+	
+	
+	<select id="selectFileDownload" parameterType="egovframework.example.sample.service.FileVO" resultType="egovframework.example.sample.service.FileVO">
+		SELECT 		file_group, file_no, original_name, file_name, file_extension, reg_id, reg_date, file_path
+		FROM 		tb_board_fileupload
+		WHERE 		file_group = #{file_group} AND file_no = #{file_no}
+	</select>
+	
+</mapper>
