@@ -39,6 +39,7 @@ import egovframework.rte.fdl.idgnr.EgovIdGnrService;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -65,8 +66,15 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 @Service("pagingExcelService")
 public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements PagingExcelService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PagingExcelServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(PagingExcelServiceImpl.class);
 
+	
+   // Set logger
+//   private final Logger logger = LogManager.getLogger(this.getClass());
+
+   // Get class name for logger
+   private final String className = this.getClass().toString();
+	
 	/** SampleDAO */
 	// TODO ibatis 사용
 //	@Resource(name = "sampleDAO")
@@ -143,7 +151,7 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
 		Date now = new Date();
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
 		String nowTime1 = sdf1.format(now);
-		System.out.println(nowTime1);
+		logger.info(nowTime1);
 
 		/*파일 업로드*/
 		MultipartFile upDownFile = request.getFile("fileUpDown");
@@ -151,16 +159,16 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
 		if(upDownFile == null || upDownFile.isEmpty()) {
             throw new RuntimeException("csv 파일을 선택해 주세요");
         }
-        System.out.println("업로드 진행2");
+        logger.info("업로드 진행2");
         
         //저장할 파일이름 변경(확장자 제거)
         String fileName = upDownFile.getOriginalFilename();
         int idx = fileName.lastIndexOf(".");
         String NfileName =fileName.substring(0,idx);
-        System.out.println("NfileName 확인 : " + NfileName);
+        logger.info("NfileName 확인 : " + NfileName);
         
         File destFile = new File("C:\\Upload\\"+NfileName + "_" + nowTime1 + ".csv" );
-        System.out.println("업로드 진행3");
+        logger.info("업로드 진행3");
         
 
         
@@ -191,9 +199,9 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
 		Date now = new Date();
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd-HHmmss");
 		String nowTime1 = sdf1.format(now);
-		System.out.println(nowTime1);
+		logger.info(nowTime1);
 
-		System.out.println("insertFile2 @@@");
+		logger.info("insertFile2 @@@");
 		
 		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
 
@@ -203,7 +211,7 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
 		for(int i=0; i<fileList.size(); i++) {
 		    MultipartFile file = fileList.get(i);
 		    String fileName = file.getOriginalFilename();
-		    System.out.println("파일뽑기 fileList : " + fileName);
+		    logger.info("파일뽑기 fileList : " + fileName);
 		}
 		
         Iterator<String> files = multipartHttpServletRequest.getFileNames();	//출력값 : fileUpDown
@@ -230,7 +238,7 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
         		fileVO.setFile_path(filepath);
         		
         		
-        		System.out.println("넣은 값 확인 : " + fileVO);
+        		logger.info("넣은 값 확인 : " + fileVO);
         		listfile.add(fileVO);
         		
                 File orgFile = new File(filepath);
@@ -247,8 +255,8 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
         }//for
         
         
-        System.out.println("listfile 확인! : " + listfile);
-        System.out.println("resultcval 확인! : " + resultcval);
+        logger.info("listfile 확인! : " + listfile);
+        logger.info("resultcval 확인! : " + resultcval);
         
         
         return resultcval;
