@@ -266,13 +266,18 @@ public class PagingExcel {
 		// 빈 Sheet를 생성
 		XSSFSheet sheet = workbook.createSheet("SheetOne");
 		
-		// Sheet를 채우기 위한 데이터들을 Map에 저장
+		// Sheet를 채우기 위한 게시판 정보 데이터들을 Map에 저장
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<LinkedHashMap<Object, Object>> resultList = pagingExcelService.selectExcelDownloadLinked(pagingExcelVO);
-		logger.info("엑셀 다운로드 결과 확인 : " + resultList);
+		logger.info("resultList확인 : " + resultList);
 		
 		
 		//LinkedHashMap의  값 가져오기
+		//map의 값만 가져오려고 작성함
+		//-> map의 값 부분이 Object여서 List<List<Object>> 이렇게 설정
+		//-> map의 값들을 가져와 그 리스트가 리스트형태로 있으니 해당 유형으로 설정
+		//처리한거긴 한데 다른 방법을 좀 찾아야겠다
+		//값이 null일때 어떻게 처리할지 생각해야겠다 -> 널 그대로 들어가나? 그러면 작성할 때 null 처리를 할 수 있도록 해야하나
 		List<List<Object>> allValueList = new ArrayList<>();
 		for (LinkedHashMap<Object, Object> map : resultList) {
 		    List<Object> valuesList = new ArrayList<>(map.values());
@@ -282,6 +287,7 @@ public class PagingExcel {
 		logger.info("allValueList 확인2 : " + allValueList.get(0).get(2));
 		
 		//LinkedHashMap의 키 가져오기
+		//첫번째 줄만 가져와서 새로운 LinkedHashMap에 넣고 거기서 키값을 추출
 		List<Object> keyList = new ArrayList<>();
 		LinkedHashMap<Object, Object> firstMap = resultList.get(0);
 	    keyList.addAll(firstMap.keySet());
@@ -337,6 +343,7 @@ public class PagingExcel {
 	    /*제목 삽입*/
 	    row = sheet.createRow(rownum++);
 	    
+	    //arrayParams : Ajax로 받아온 화면에 표출된 표의 헤더 값
 	    for(int c =0; c<arrayParams.size(); c++) {
 	    	cell=row.createCell(cellnum++);
 	    	cell.setCellStyle(titleStyle);	//셀 병합시 스타일이 병합에 맞게 적용되지 않음 -> 각각 셀에 스타일 지정 후 병합
@@ -381,6 +388,8 @@ public class PagingExcel {
 		return result;
 	}
 	
+	/*흐으으음 -> 복붙
+	 * 작동을 하는데 이해못함*/
 	@ResponseBody
     @RequestMapping(value = "/excelUploadAjax.do", method = RequestMethod.POST)
         public ModelAndView excelUploadAjax(MultipartFile testFile, MultipartHttpServletRequest request) throws  Exception{
@@ -739,7 +748,7 @@ public class PagingExcel {
 		} 
 	}//end
 	
-	//Ajax로 파일 다운로드(XMLHttpRequest의 responseType 을 blob으로 설정 후 진행)
+/*	//Ajax로 파일 다운로드 return void(XMLHttpRequest의 responseType 을 blob으로 설정 후 진행)
 	@ResponseBody
 	@RequestMapping(value = "/selectFileDownloadAjax.do", method = RequestMethod.POST)
 	public void selectFileDownloadAjax(@RequestParam Map<String, Object> paramMap, FileVO fileVO, HttpServletRequest request, HttpServletResponse response) throws  Exception{
@@ -795,9 +804,134 @@ public class PagingExcel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
-		
 	}//end
+	*/
 	
+	/*
+	//Ajax로 파일 다운로드 return String -> jsonView 
+	//(XMLHttpRequest의 responseType 을 blob으로 설정 후 진행)
+	@RequestMapping(value = "/selectFileDownloadAjax.do", method = RequestMethod.POST)
+	public String selectFileDownloadAjax(@RequestParam Map<String, Object> paramMap, FileVO fileVO, HttpServletRequest request, HttpServletResponse response) throws  Exception{
+		
+		logger.info("selectFileDownload##");
+		logger.info("파라미터로 받아오는지 확인읋 하자22@@@jsonView : " + fileVO);
+		
+		//선택한 파일 정보 가져오기
+		FileVO fileInfo = pagingExcelService.selectFileDownload(fileVO);
+		logger.info("파일 확인 : " + fileInfo.getFile_path() + " + " + fileInfo.getFile_name());
+		
+		File src = new File(fileInfo.getFile_path()); 	//TRUE -> path만 작성하니까 됨(파일 이름 빼고)
+		logger.info("파일 존재 여부 : " + src.exists());
+		
+		BufferedInputStream in = new BufferedInputStream(new FileInputStream(src));
+
+		String outputName = null; //한글 인코딩 처리 
+	    String browser = request.getHeader("User-Agent");
+	    
+	    //파일 인코딩
+	    if(browser.contains("MSIE") || browser.contains("Trident") || browser.contains("Chrome")){
+	      //브라우저 확인 파일명 encode  		             
+	    	outputName = URLEncoder.encode(fileInfo.getFile_name(), "UTF-8").replaceAll("\\+", "%20");		             
+	    }else{		             
+	    	outputName = new String(fileInfo.getFile_name().getBytes("UTF-8"), "ISO-8859-1");
+	    } 
+
+	    long fileSize = src.length();
+		
+		logger.info("아웃풋네임 : " + outputName);
+		
+		response.setContentLength( (int) fileSize ); 
+		response.setHeader("Content-Length", String.valueOf( src.length() ) ); 
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + outputName + "\""); 
+		response.setContentType("application/octet-stream;"); 
+		response.setCharacterEncoding("UTF-8"); 
+		response.setHeader("Content-Transfer-Encoding", "binary;");
+		
+		logger.info("response 설정 : ");
+		
+		try {
+			// 서버의 파일 입력 스트림 
+			FileInputStream fis = new FileInputStream(src); 
+			logger.info("FileInputStream 설정 : ");
+			
+			// 클라이언트 응답 출력 스트림 
+			OutputStream out = response.getOutputStream();
+			logger.info("OutputStream 설정 : ");
+			
+			FileCopyUtils.copy(fis, out); 	//FileCopyUtils : 자동으로 flush, close 됨
+			logger.info("FileCopyUtils 설정 : ");
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return "jsonView";
+	}//end
+	*/
+	
+	
+	//Ajax로 파일 다운로드 return jsonView (XMLHttpRequest의 responseType 을 blob으로 설정 후 진행)
+	@RequestMapping(value = "/selectFileDownloadAjax.do", method = RequestMethod.POST)
+	public ModelAndView selectFileDownloadAjax(@RequestParam Map<String, Object> paramMap, FileVO fileVO, HttpServletRequest request, HttpServletResponse response) throws  Exception{
+		
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("jsonView");
+		
+		logger.info("selectFileDownload##");
+		logger.info("파라미터로 받아오는지 확인읋 하자22@@@jsonView : " + fileVO);
+		
+		//선택한 파일 정보 가져오기
+		FileVO fileInfo = pagingExcelService.selectFileDownload(fileVO);
+		logger.info("파일 확인 : " + fileInfo.getFile_path() + " + " + fileInfo.getFile_name());
+		
+		File src = new File(fileInfo.getFile_path()); 	//TRUE -> path만 작성하니까 됨(파일 이름 빼고)
+		logger.info("파일 존재 여부 : " + src.exists());
+		
+		BufferedInputStream in = new BufferedInputStream(new FileInputStream(src));
+		
+		String outputName = null; //한글 인코딩 처리 
+		String browser = request.getHeader("User-Agent");
+		
+		//파일 인코딩
+		if(browser.contains("MSIE") || browser.contains("Trident") || browser.contains("Chrome")){
+			//브라우저 확인 파일명 encode  		             
+			outputName = URLEncoder.encode(fileInfo.getFile_name(), "UTF-8").replaceAll("\\+", "%20");		             
+		}else{		             
+			outputName = new String(fileInfo.getFile_name().getBytes("UTF-8"), "ISO-8859-1");
+		} 
+		
+		long fileSize = src.length();
+		
+		logger.info("아웃풋네임 : " + outputName);
+		
+		response.setContentLength( (int) fileSize ); 
+		response.setHeader("Content-Length", String.valueOf( src.length() ) ); 
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + outputName + "\""); 
+		response.setContentType("application/octet-stream;"); 
+		response.setCharacterEncoding("UTF-8"); 
+		response.setHeader("Content-Transfer-Encoding", "binary;");
+		
+		logger.info("response 설정 : ");
+		
+		try {
+			// 서버의 파일 입력 스트림 
+			FileInputStream fis = new FileInputStream(src); 
+			logger.info("FileInputStream 설정 : ");
+			
+			// 클라이언트 응답 출력 스트림 
+			OutputStream out = response.getOutputStream();
+			logger.info("OutputStream 설정 : ");
+			
+			FileCopyUtils.copy(fis, out); 	//FileCopyUtils : 자동으로 flush, close 됨
+			logger.info("FileCopyUtils 설정 : ");
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		
+		mav.addObject("result", 1);
+		
+		return mav;
+	}//end
 	
 	
 	

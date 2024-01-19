@@ -133,9 +133,12 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
         
         List<Map<String, String>>excelContent  = ExcelRead.read(excelReadOption);
         
+        //SQL에서 각 데이터를 DB에 넣기 위해 foreach 사용계획 
+        //collection="excelContent" -> 컬렉션 : map / 이름 : excelContent 
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("excelContent", excelContent);
         
+        //DB에 엑셀 내용 넣기
         try {
         	pagingExcelDAO.insertExcel(paramMap);
         }catch(Exception e) {

@@ -335,7 +335,12 @@ $("#downBTN").on('click',function(){
         }
         console.log("FILENAME: " + filename);
 
+        	console.log("mav 값 확인 : " + JSON.stringify(this.response.result));
         if (this.status === 200) {
+        	
+        	console.log("mav 값 확인 : " + JSON.stringify(this.response.result));
+        	
+        	//정상 연결시 처리
             var blob = this.response;
             if(window.navigator.msSaveOrOpenBlob) {
                 window.navigator.msSaveBlob(blob, filename);
@@ -343,12 +348,15 @@ $("#downBTN").on('click',function(){
             else{
                 var downloadLink = window.document.createElement('a');
                 var contentTypeHeader = request.getResponseHeader("Content-Type");
-                downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: contentTypeHeader }));
+                downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: contentTypeHeader }));	//ex) createObjectURL 확인 : blob:http://localhost:8088/c52be668-73f7-4ef7-b90a-aeb4f608d752
                 downloadLink.download = filename;
                 document.body.appendChild(downloadLink);
                 downloadLink.click();
                 document.body.removeChild(downloadLink);
             }
+        } else {
+        	//실패시 처리
+        	alert("다운로드에 실패했습니다. HTTP 응답 상태 코드: " + this.status);
         }
     };
 
@@ -705,6 +713,7 @@ function excelDownload3() {
 			//작업할 엑셀 시트
 			var worksheet =  workbook.getWorksheet ( 'SheetOne' ) ;
 			
+			//엑셀시트에 제목 작성(범위 -> 병합, 값, 폰트, 정렬, 셀배경, 테두리)
 			SheetOne.mergeCells('A1:E1');
 			SheetOne.getCell('A1').value = '자유게시판';
 			SheetOne.getCell('A1').font = { size: 20, bold: true };
@@ -724,9 +733,10 @@ function excelDownload3() {
 			    right: { style: 'thin', color: { argb: '000000' } },
 			  };
 			
-			  //빈 행 삽입
+			  //빈 행 삽입(제목 아래 빈 행 삽입)
 			  SheetOne.spliceRows(2 , 0, []);
 			  
+			//화면에 표출한 테이블 요소
 			var thisTb = document.getElementById('boardTb');
 			
 			//헤더 값 가져오기
@@ -743,6 +753,7 @@ function excelDownload3() {
 			//헤더 입력
 			worksheet.addRow(headColumns);
 			
+			//3번째줄 -> 헤더 값 입력시 셀 배경, 테두리, 폰트 설정
 			worksheet.getRow(3).eachCell({ includeEmpty: true }, function (cell) { 
 				cell.fill = {
 							    type: 'pattern',
@@ -774,6 +785,8 @@ function excelDownload3() {
 						temp.push(result.list[c][Object.keys(result.list[c])[d]]);
 				}//innerfor
 					console.log("temp값 : " + temp);
+				
+					//각각의 셀 테두리 설정
 					worksheet.addRow(temp).eachCell(function(cell) {
 						cell.border = {
 							top: {style:'thin'},
@@ -781,6 +794,7 @@ function excelDownload3() {
 							bottom: {style:'thin'},
 							right: {style:'thin'}
 						};
+						//셀 정렬 (가운데정렬)
 						cell.alignment = { vertical: 'middle', horizontal: 'center' };
 					})
 			}//outerfor
@@ -844,6 +858,7 @@ function excelDownload5() {
 	
 	
 	var thisTb = document.getElementById('boardTb');
+	
 	//헤더 값 가져오기
 	var rowList = thisTb.rows[0];	//헤더(표의 0번째 줄)
 	var rowListCnt= rowList.childElementCount	//컬럼 개수(헤더 컬럼 개수)
@@ -858,7 +873,7 @@ function excelDownload5() {
 		$.ajax({
 		url: "${pageContext.request.contextPath}/pagingExcelBoardDownloadPoi.do",
 		method:"POST",
-		data:{headColumns : headColumns},
+		data:{headColumns : headColumns},	//헤더값을 컨트롤러로 전달
 		success:function(result){
 // 			console.log("ajax 엑셀 내용물 확인 : " + JSON.stringify(result));
 			}//success
