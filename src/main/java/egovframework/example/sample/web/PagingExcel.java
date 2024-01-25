@@ -16,16 +16,16 @@
 package egovframework.example.sample.web;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -33,24 +33,11 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.UUID;
-
-import egovframework.example.sample.service.EgovSampleService;
-import egovframework.example.sample.service.FileVO;
-import egovframework.example.sample.service.PagingExcelService;
-import egovframework.example.sample.service.PagingExcelVO;
-import egovframework.example.sample.service.SampleDefaultVO;
-import egovframework.example.sample.service.SampleVO;
-
-import egovframework.rte.fdl.property.EgovPropertyService;
-import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -58,7 +45,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.poi.sl.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -71,24 +57,27 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
-import org.springmodules.validation.commons.DefaultBeanValidator;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+import com.opencsv.exceptions.CsvException;
+
+import egovframework.example.sample.service.FileVO;
+import egovframework.example.sample.service.PagingExcelService;
+import egovframework.example.sample.service.PagingExcelVO;
+import egovframework.rte.fdl.property.EgovPropertyService;
 
 /**
  * @Class Name : EgovSampleController.java
@@ -106,8 +95,8 @@ import com.github.pagehelper.PageInfo;
  *
  *  Copyright (C) by MOPAS All right reserved.
  */
-
 @Controller
+@RequestMapping(value = "/board")	//-> 컨트롤러 mapping 값은 바꾸지 않아도 되지만 jsp의 경로는 앞에 board 붙여줘야함
 public class PagingExcel {
 
 	/** EgovSampleService */
@@ -149,7 +138,7 @@ public class PagingExcel {
 		model.addAttribute("pageInfo",pageInfo);		
 		 */
 		
-		return "sample/PagingExcel";
+		return "board/PagingExcel";
 	}
 	
 	/**
@@ -164,7 +153,7 @@ public class PagingExcel {
 	@ResponseBody
 	@RequestMapping(value = "/pagingExcelBoardLoad.do")
 	public Map<String, Object> selectBoardList(@ModelAttribute("pagingExcelVO") PagingExcelVO pagingExcelVO, ModelMap model) throws Exception {
-
+		
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		/*startPage : 페이지 지정시 사용 메소드 (조회하고 싶은 페이지 번호 , 페이지 당 보여줄 아이템 개수_게시글 개수)*/
@@ -180,7 +169,24 @@ public class PagingExcel {
 		
 		return result;
 	}
+	
+	//상세보기
+	@RequestMapping(value = "/pagingExcelBoardDetail.do")
+	public String pagingExcelBoardDetail(@ModelAttribute("pagingExcelVO") PagingExcelVO pagingExcelVO, ModelMap model) throws Exception {
+		
+		logger.info("detail chk : " + pagingExcelVO);
 
+		
+//		model.addAttribute("", );
+
+		
+		return "board/boardDetail";
+	}
+
+	
+	
+	
+	
 	/**
 	 * 표 액샐 다운로드(exceljs, filesaver)
 	 * excelDownload1, excelDownload2 연결
@@ -864,6 +870,8 @@ public class PagingExcel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
+		
+		
 		return "jsonView";
 	}//end
 	*/
@@ -928,13 +936,186 @@ public class PagingExcel {
 			e.printStackTrace();
 		} 
 		
-		mav.addObject("result", 1);
+		mav.addObject("result", 1);	//ajax return data를 blob로 설정해서 해당 값은 jsp에서 확인 불가
+		//mav는 파일 업로드, 삭제와 같이 따로 blob와 같은 리턴 데이터가 필요없을 때 사용해야하나봐
+		//그냥 ajax 사용해서 다운로드할 땐 void여야하나봐
 		
 		return mav;
 	}//end
 	
 	
+	@ResponseBody
+	@RequestMapping(value = "/uploadUpDownCsv.do", method = RequestMethod.POST)
+	public void uploadUpDownCsv(@RequestParam Map<String, Object> paramMap, FileVO fileVO, HttpServletRequest request, HttpServletResponse response) throws  Exception{
 	
+		//1. 업로드
+		logger.info("@ OpenCSV 사용 + 업로드 + submit @");
+		int groupNo = pagingExcelService.selectFileGroupNo();
+		Map<String, Object> resultdata = pagingExcelService.insertCsvFile(paramMap, request, groupNo);
+		//업로드 정상동작 확인
+		
+		
+		//2. 읽기
+		//제일 최신 그룹넘버 확인
+		//최신 그룹넘버의 파일 순서 desc로 가져오기
+		//한개씩 읽기, 수정, 출력 해야할 것 같은걸..?
+		logger.info("csv insert 정보 리스트 조회 : " + ((List<FileVO>) resultdata.get("listfile")).get(0));		
+		logger.info("csv insert 정보 리스트 조회 : " + ((List<FileVO>) resultdata.get("listfile")));	
+		int listfileSize = ((List<FileVO>) resultdata.get("listfile")).size();		
+		logger.info("csv insert 정보 리스트 조회 : " + listfileSize);	
+		
+		List<String> pathList = new ArrayList<>();
+		
+		if(!((List<FileVO>) resultdata.get("listfile")).isEmpty()) {
+			for(int i = 0; i<listfileSize; i++) {
+				logger.info("for내부 정보 리스트 조회 : " + ((List<FileVO>) resultdata.get("listfile")).get(i).getFile_path());	
+				pathList.add(((List<FileVO>) resultdata.get("listfile")).get(i).getFile_path());
+			}
+		}
+		logger.info("pathList 정보 리스트 조회 : " + pathList);
+		
+		
+		for(String path : pathList){
+		    logger.info("pathList  : " + path);
+		    
+		    String filePath = path;
+		    String updateNm = updateCsvFileNm(filePath);
+		    logger.info("updateNm  : " + updateNm);
+		    
+		    
+		    
+		    List<String[]> readAll = readDataFromCsv(filePath);
+			//readAll 내용물 확인
+//			for(String[] data : readAll) {
+//				System.out.println("readAll  : " + Arrays.toString(data));
+//			}
+		    
+		    
+		    //하나씩 작성, 덮어써서 작성(true) 선택 가능 => 새파일 만들래 그냥.. ~.수정.csv
+		    CSVWriter writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(updateNm), "EUC-KR"));
+		    	
+		    //csv Header
+	    	ArrayList<String> csvHeader = new ArrayList<String>(Arrays.asList(readAll.get(0)));
+	    	csvHeader.add("서울여부");
+	    	writer.writeNext(csvHeader.toArray(new String[0]));
+		    
+		    int endRow = 0;
+		    endRow = readAll.size();
+		    
+		    List<String> csvRowData = null; 
+		    
+			for (int j = 1; j < endRow; j++) {//csv 모든 행
+				String chkWord = "";
+				csvRowData = new ArrayList<String>(Arrays.asList(readAll.get(j)));
+				
+				logger.info("csvRowData.get(5)  : " + csvRowData.get(5));
+				csvRowData.get(5);
+				
+				//3. 수정
+				if(csvRowData.get(5).equals("서울")) {
+					csvRowData.add("Y");
+				}else {
+					csvRowData.add("N");
+				}
+				
+				//4. 출력
+				logger.info("추가한 csvRowData : " + csvRowData);
+				writer.writeNext(csvRowData.toArray(new String[0]));
+				
+			}//for
+		    //csv출력
+		    writer.close();
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		}
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	//openCSV 사용해서 csv 읽기
+    public static List<String[]> readDataFromCsv(String filePath) throws IOException {
+
+    	
+    		//csv 한글 꺠짐
+//			CSVReader reader = new CSVReader(new FileReader(filePath));
+    		//csv 한글 꺠짐 방지 - 한글처리
+			CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(filePath), "EUC-KR"));
+			//VO List로 받기
+//			List<PharmacyCsvVO> voList = 
+			
+			//String List로 받기
+//			List<String> strList = 
+			
+			//reader.readAll() 사용
+			
+			List<String[]> readAll = null; 
+			try {
+				readAll= reader.readAll();
+			} catch (CsvException e1) {
+				e1.printStackTrace();
+			}
+			
+			//readAll 내용물 확인
+			/*
+			for(String[] data : readAll) {
+				System.out.println("readAll  : " + Arrays.toString(data));
+			}
+			*/
+			
+		    
+
+			
+			
+			//String []로 받기, reader.readNext
+			/*
+			String [] pArr;
+
+			//csv 한줄씩 읽기
+			try {
+				while ((pArr = reader.readNext()) != null) {   // 2
+				    for (int i = 0; i < pArr.length; i++) {
+				        System.out.println(i + " " + pArr[i]);
+				    }
+				    System.out.println();
+				}
+			} catch (CsvValidationException e) {
+				e.printStackTrace();
+			}
+			*/
+			
+			reader.close();
+			
+			return readAll;
+			
+		}//end
+	
+    public String updateCsvFileNm(String filePath) throws IOException {
+    	
+    	String saveCsvNm = "";
+    	
+    	int idx = filePath.lastIndexOf(".");
+    	String subExten = filePath.substring(0, idx);
+    	logger.info("subExten  : " + subExten);
+    	
+    	saveCsvNm = subExten + "_수정.csv";
+    	
+    	return saveCsvNm;
+    
+    }
 	
 
 }

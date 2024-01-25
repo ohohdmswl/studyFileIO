@@ -69,6 +69,8 @@ public interface PagingExcelService {
 	
 	int insertFile2(Map<String, Object> paramMap, HttpServletRequest request, int groupNo);
 
+	Map<String, Object> insertCsvFile(Map<String, Object> paramMap, HttpServletRequest request, int groupNo);
+
 	//파일 그룹넘버 조회
 	int selectFileGroupNo();
 

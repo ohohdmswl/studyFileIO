@@ -3,17 +3,17 @@
 <mapper namespace="egovframework.example.sample.service.impl.PagingExcelSQL">
 
 	<select id="selectDataList" resultType="map">
-		select 		(ROW_NUMBER() OVER(order by board_no)) AS rownum, board_title, board_writer, TO_CHAR(board_date , 'YYYY-MM-DD HH24:MI')AS board_date, board_hit
+		select 		(ROW_NUMBER() OVER(order by board_no)) AS rownum, board_no, board_title, board_writer, TO_CHAR(board_date , 'YYYY-MM-DD HH24:MI')AS board_date, board_hit
 		from		tb_board
 	</select>
 
 	<select id="selectPDataList" resultType="map">
-		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_title, board_writer, TO_CHAR(board_date , 'YYYY-MM-DD HH24:MI')AS board_date, board_hit
+		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_no, board_title, board_writer, TO_CHAR(board_date , 'YYYY-MM-DD HH24:MI')AS board_date, board_hit
 		from		tb_board
 	</select>
 
 	<select id="selectExcelDownload" resultType="map">
-		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_title, board_writer, board_date, board_hit
+		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_no, board_title, board_writer, board_date, board_hit
 		from		tb_board
 	</select>
 	
@@ -22,12 +22,12 @@
 <!-- 		from		tb_board -->
 		
 		<!-- 2. 쿼리에서 Tochar 사용해서 처음부터 String으로 받아오기 -->
-		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_title, board_writer, TO_CHAR(board_date , 'YYYY-MM-DD HH24:MI')AS board_date , board_hit
+		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_no, board_title, board_writer, TO_CHAR(board_date , 'YYYY-MM-DD HH24:MI')AS board_date , board_hit
 		from		tb_board
 	</select>
 
 	<select id="selectExcelDownloadList" resultType="egovframework.example.sample.service.PagingExcelVO">
-		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_title, board_writer, board_date, board_hit
+		select 		(ROW_NUMBER() OVER(order by board_no desc)) AS rownum, board_no, board_title, board_writer, board_date, board_hit
 		from		tb_board
 	</select>
 	

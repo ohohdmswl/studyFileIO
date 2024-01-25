@@ -147,7 +147,7 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
 	
 	}
 	
-	//csv파일 업로드
+	//csv파일 업로드(단일파일)
 	@Override
 	public int insertFile1(MultipartFile upfile, MultipartHttpServletRequest request) {
 		//날짜 포멧(제목에 붙일)
@@ -194,7 +194,7 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
 	}
 	
 	
-	//csv파일 업로드
+	//csv파일 업로드(다중파일)
 	@Override
 	public int insertFile2(Map<String, Object> paramMap, HttpServletRequest request, int groupNo) {
 		
@@ -210,7 +210,11 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
 
 		List<FileVO> listfile = new ArrayList<>();
 		
-		List<MultipartFile> fileList = multipartHttpServletRequest.getFiles("fileUpDown");
+		//파일 업다운
+//		List<MultipartFile> fileList = multipartHttpServletRequest.getFiles("fileUpDown");
+
+		//opencsv 파일 업다운
+		List<MultipartFile> fileList = multipartHttpServletRequest.getFiles("fileUpDownCsv");
 		for(int i=0; i<fileList.size(); i++) {
 		    MultipartFile file = fileList.get(i);
 		    String fileName = file.getOriginalFilename();
@@ -222,8 +226,10 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
         int resultcval = 0;
         
         for (MultipartFile mf : fileList) {
+        	logger.info("for문 확인");
         	
         	if (!fileList.isEmpty()) {
+        		logger.info("if문 확인");
         		FileVO fileVO = new FileVO();
 
         		fileVO.setFile_group(groupNo); 
@@ -263,12 +269,87 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
         
         
         return resultcval;
-        
-        
-        
-        
-        
 //        return 0;
+		
+	}
+	
+	//csv파일 업로드(다중파일)
+	@Override
+	public Map<String, Object> insertCsvFile(Map<String, Object> paramMap, HttpServletRequest request, int groupNo) {
+		
+		//날짜 포멧(제목에 붙일)
+		Date now = new Date();
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd-HHmmss");
+		String nowTime1 = sdf1.format(now);
+		logger.info(nowTime1);
+		
+		logger.info("insertCsvFile @@@");
+		
+		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
+		
+		List<FileVO> listfile = new ArrayList<>();
+		
+		//파일 업다운
+//		List<MultipartFile> fileList = multipartHttpServletRequest.getFiles("fileUpDown");
+		
+		//opencsv 파일 업다운
+		List<MultipartFile> fileList = multipartHttpServletRequest.getFiles("fileUpDownCsv");
+		for(int i=0; i<fileList.size(); i++) {
+			MultipartFile file = fileList.get(i);
+			String fileName = file.getOriginalFilename();
+			logger.info("파일뽑기 fileList : " + fileName);
+		}
+		
+		Iterator<String> files = multipartHttpServletRequest.getFileNames();	//출력값 : fileUpDown
+		
+		int resultcval = 0;
+		
+		for (MultipartFile mf : fileList) {
+			logger.info("for문 확인");
+			
+			if (!fileList.isEmpty()) {
+				logger.info("if문 확인");
+				FileVO fileVO = new FileVO();
+				
+				fileVO.setFile_group(groupNo); 
+				fileVO.setOriginal_name(mf.getOriginalFilename()); 
+				
+				int idx = fileVO.getOriginal_name().lastIndexOf(".");
+				String fileNm = fileVO.getOriginal_name().substring(0,idx);
+				String fileExten = fileVO.getOriginal_name().substring(fileVO.getOriginal_name().lastIndexOf(".")+1);
+				String saveFileNm = fileNm + "_" +  nowTime1 +"." + fileExten;
+				
+				fileVO.setFile_name(saveFileNm);
+				
+				fileVO.setFile_extension(fileExten);
+				String filepath = "C:\\Upload\\multifile\\" + saveFileNm;
+				fileVO.setFile_path(filepath);
+				
+				
+				logger.info("넣은 값 확인 : " + fileVO);
+				listfile.add(fileVO);
+				
+				File orgFile = new File(filepath);
+				try {
+					mf.transferTo(orgFile);
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new RuntimeException("파일 전송 중 오류 발생: " + e.getMessage(), e);
+				}
+				resultcval += pagingExcelDAO.insertFileUp(fileVO); 
+			}//if
+		}//for
+		
+		
+		logger.info("listfile 확인! : " + listfile);
+		logger.info("resultcval 확인! : " + resultcval);
+		
+		Map<String, Object> returnmap = new HashMap<String, Object>();
+		returnmap.put("listfile", listfile);
+		
+		return returnmap;
 		
 	}
 
@@ -289,6 +370,9 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
 	public FileVO selectFileDownload(FileVO fileVO) {
 		return pagingExcelDAO.selectFileDownload(fileVO);
 	}
+	
+
+	
 	
 	
 	/**

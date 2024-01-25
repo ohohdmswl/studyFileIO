@@ -1,39 +1,20 @@
-<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%@ taglib prefix="c"      uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="form"   uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="ui"     uri="http://egovframework.gov/ctl/ui"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-
-<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/jsp/egovframework/example/board/header.jsp"%>
 
 
-
-
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><spring:message code="title.sample" /></title>
-    <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/pagingExcel.css'/>"/>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-    
-</head>
-
-<body>
-	<div id = "cont">
+<!-- 	<div id = "cont"> -->
 	<!-- flex -->
-		<div id="imageDiv">
-			<img src="${pageContext.request.contextPath}/images/egovframework/pagingExcel/vase.png" style="width: 4rem; height: 4rem;" />
-		</div>
+<!-- 		<div id="imageDiv"> -->
+<%-- 			<img src="${pageContext.request.contextPath}/images/egovframework/pagingExcel/vase.png" style="width: 4rem; height: 4rem;" /> --%>
+<!-- 		</div> -->
 		<!-- //imageDiv -->
-	<div id="flexDiv">
+<!-- 	<div id="flexDiv"> -->
+	
+	
+		<div id="pageTitle">
+			<p class="pageTitle">HELLO</p>
+		</div>
+		<!-- pageTitle -->
 	
 		<div id="firstDiv">
 			<div class="excelDown" onclick="excelDownload1()">
@@ -96,37 +77,105 @@
 				</form>	
 			</div>
 		</div>		
+		<!-- //thirdDiv -->
 		
 		<!-- fourthDiv -->
 		<div id="fourthDiv">
-			<div id="tb">
-				<table class="" id="boardTb" >
-					<thead class="thead_green" >
-						<tr>
-							<th class="w10">번호</th>
-							<th class="w50">제목</th>
-							<th class="w10">작성자</th>
-							<th class="w20">작성일</th>
-							<th class="w10">조회수</th>
-						</tr>
-					</thead>
-					<tbody >
-					</tbody>
-				</table>
+			<div id="fileUpCsvDiv">
+<%-- 				<form id="fileUpDownCsvForm" name="fileUpDownCsvForm" enctype="multipart/form-data" accept-charset="UTF-8" method="post" action= "${pageContext.request.contextPath}/uploadUpDownCsv.do"> --%>
+				<form id="fileUpDownCsvForm" name="fileUpDownCsvForm" enctype="multipart/form-data" accept-charset="UTF-8" method="post" action= "${pageContext.request.contextPath}/uploadUpDownCsv.do">
+					<input class="fileUpDownCsv-name" value="첨부파일" placeholder="첨부파일" />
+					<label for="fileUpDownCsv">csv업로드</label>
+					<input id="fileUpDownCsv" type="file" name="fileUpDownCsv" multiple/>
+				</form>	
 			</div>
-		</div>
+			<div id = "fileDownCsvDiv">
+				<form id="fileDownCsvForm" name="fileDownCsvForm" enctype="multipart/form-data" accept-charset="UTF-8" method="post" action= "${pageContext.request.contextPath}/selectFileDownloadCsv.do">
+					<select id="csvfile_group" name="csvfile_group" class = "firstSelect">
+						<option value="" >파일구분</option>
+					</select>
+					<select id="csvfile_no" name="csvfile_no" class="secondSelect">
+						<option value="" >파일상세</option>
+					</select>
+<!-- 					<div class="downBTN" onclick="javascript:selectCsvFileDownload();">다운로드</div> -->
+<!-- 					<div class="downBTN" onclick="javascript:selectCsvFileDownloadAjax();">다운로드</div> -->
+					<div class="downCsvBTN" id="downCsvBTN">다운로드</div>
+				</form>	
+			</div>
+		</div>		
 		<!-- //fourthDiv -->
 		
-		<!-- fivethDiv -->
-		<div id="fivethDiv">
+		
+		
+		<form id = "boardForm" name="boardForm" method="post">
+			<input type="hidden" id="pageIndex" name="pageIndex" value="" /> 
+			<input type="hidden" id="board_no" name="board_no" /> 
+<!-- 			<input type="hidden" id="pageUnit" name="pageUnit" value="" />  -->
+		
+			<!-- fivethDiv -->
+			<div id="fivethDiv">
+				<div id="tb">
+					<table class="" id="boardTb" >
+						<thead class="thead_green" >
+							<tr>
+								<th class="w10">번호</th>
+								<th class="w50">제목</th>
+								<th class="w10">작성자</th>
+								<th class="w20">작성일</th>
+								<th class="w10">조회수</th>
+							</tr>
+						</thead>
+						<tbody >
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- //fivethDiv -->
+			
+			<!-- sixthDiv -->
+			<div id="sixthDiv">
+				<div class="excelDownBtn" onclick="excelDownload()"><p>엑셀 다운로드</p></div>
+			</div>
+			<!-- //sixthDiv -->
+		</form>
+		<!-- //boardForm -->
+		
+		
+		<!-- 액샐 다운로드 모덜 -->
+		<div class="modal excelDownModal hidden" id="excelDownModal">
+			
+			<div class="modalTitle">
+				<img id ="modalCloseBtn" alt="" src="${pageContext.request.contextPath}/images/egovframework/pagingExcel/Xicon2.png">
+				<h3>엑셀 다운로드</h3>
+			</div>
+			<!-- 다운 버튼 모음 -->
+			<div>
+				<div class="excelDown" onclick="excelDownload1()">
+					<p>엑셀 다운로드1</p>
+				</div>
+				<div class="excelDown" onclick="excelDownload2()">
+					<p>엑셀 다운로드2</p>
+				</div>
+				<div class="excelDown" onclick="excelDownload3()">
+					<p>엑셀 다운로드3</p>
+				</div>
+				<div class="excelDown" onclick="excelDownload4()">
+					<p>엑셀 다운로드4</p>
+				</div>
+				<div class="excelDown" onclick="excelDownload5()">
+					<p>엑셀 다운로드5</p>
+				</div>
+			</div>
+			<!-- //다운 버튼 모음 -->
+			
+			<button class="" id="modalCloseBtn" type="button" onclick="d">닫기</button>
 		</div>
-		<!-- //fivethDiv -->
+		
 		
 	</div>
 	<!-- //flex -->
 </div>
 <!-- //cont -->
-
 
 
 
@@ -136,11 +185,15 @@
 <script>
 
 
+
+
+
+
 $(document).ready(function(){
     
 	boardPage();
 	
-	selectfileList();
+// 	selectfileList();
 });
 
 
@@ -156,10 +209,14 @@ function boardPage(pnum) {
 	
     //tb 내용 삽입
 	$.ajax({
-		url: "${pageContext.request.contextPath}/pagingExcelBoardLoad.do",
+		url: "${pageContext.request.contextPath}/board/pagingExcelBoardLoad.do",
 		method:"POST",
 		data:{pageIndex : pnum},	//클릭한 페이지 인덱스
+		async: false,
 		success:function(result){
+			
+			//페이지번호(pnum) -> input hidden 설정
+			$("#pageIndex").val(pnum);
 			
 			console.log("ajax 내용물 확인 : " + JSON.stringify(result));
 			
@@ -167,7 +224,7 @@ function boardPage(pnum) {
 			for(var i=0;i<result.pageInfo.list.length;i++){
 				html += '<tr>';
 				html += '<td class="w10">'+result.pageInfo.list[i].rownum+'</td>';
-				html += '<td class="w50">'+result.pageInfo.list[i].board_title+'</td>';
+				html += '<td class="w50"><a href="#" onclick="fnDetail(' + result.pageInfo.list[i].board_no + ');">' + result.pageInfo.list[i].board_title + '</a></td>';
 				html += '<td class="w10">'+result.pageInfo.list[i].board_writer+'</td>';
 				html += '<td class="w20">'+result.pageInfo.list[i].board_date+'</td>';
 				html += '<td class="w10">'+result.pageInfo.list[i].board_hit+'</td>';
@@ -175,8 +232,13 @@ function boardPage(pnum) {
 			}
 			$("#boardTb tbody").html(html);
 			
+			var pagination = "";
+			
+			//엑셀 다운로드 버튼(게시글 하단)
+			pagination += "<div class='excelDownBtn' onclick='excelDownload()'><p>엑셀 다운로드</p></div>";
+			
 			//페이지네이션 변수, div
-			var pagination = "<div class='paging_area pagination p1'  id='boardPagination'>";
+			pagination += "<div class='paging_area pagination p1'  id='boardPagination'>";
 			pagination += "<ul>"
 			
 			/* 첫번째 페이지 번호에서도 처음, 이전 보이게 하는 코드
@@ -228,10 +290,24 @@ function boardPage(pnum) {
 			pagination += "</ul>"
 			pagination += "</div>";
 			
-			$("#fivethDiv").html(pagination);
+			
+			
+			$("#sixthDiv").html(pagination);
 		}//success
 	})
 }
+
+
+function fnDetail(board_no){
+	$("#board_no").val(board_no);
+	
+	$("#boardForm").attr("enctype", "");
+	$("#boardForm").attr({"action": "<c:out value='${pageContext.request.contextPath}/board/pagingExcelBoardDetail.do'/>", "method": "post"}).submit();
+}
+
+
+
+
 /**
  * 파일 그룹번호 콤보박스 list 조회
  */
@@ -335,10 +411,7 @@ $("#downBTN").on('click',function(){
         }
         console.log("FILENAME: " + filename);
 
-        	console.log("mav 값 확인 : " + JSON.stringify(this.response.result));
         if (this.status === 200) {
-        	
-        	console.log("mav 값 확인 : " + JSON.stringify(this.response.result));
         	
         	//정상 연결시 처리
             var blob = this.response;
@@ -365,6 +438,11 @@ $("#downBTN").on('click',function(){
     request.send( params);
 
 });//end
+	
+	
+	
+	
+	
 	
 /*	
 function selectFileDownload() {
@@ -1034,9 +1112,16 @@ $("#fileUpDown").on('change',function(){
 	  
 	  //파일업로드 직후
 	  fileUpDowncheck();
-	 
 	});
 
+$("#fileUpDownCsv").on('change',function(){
+	  var fileName = $("#fileUpDownCsv").val().split('/').pop().split('\\').pop();
+	  $(".fileUpDownCsv-name").val(fileName);
+	  
+	  //파일업로드 직후
+	  fileUpDownCsvcheck();
+	});
+	
 
 function checkFileType(filePath) {
 	alert("파일 타입 체크 함수");
@@ -1161,7 +1246,6 @@ function fileUpDowncheck() {
     	 $('#fileUpDown').val(''); 
   		 $(".fileUpDown-name").val('');
     	return false;
-    	
     }
 
     if (confirm("업로드 하시겠습니까?")) {
@@ -1177,18 +1261,59 @@ function fileUpDowncheck() {
 	          		  
 	          		  console.log("에이젝스 결과 확인 : " + data.fileNm);
 	          		  console.log("에이젝스 결과 확인 : "+ data.filePath);
-	          		  
-	          		  
 	          		  },
 	        type : "POST"
       };
-      
       $("#fileUpDownForm").ajaxSubmit(options);
-      
-     
     }
   }
 
+function fileUpDownCsvcheck() {
+	 
+	//해보고 오래걸릴거 같으니까 로딩바를 추가해보자
+	
+	alert("fileUpDownCsv체크체크");
+    var file = $("#fileUpDownCsv").val();
+
+    if (file == "" || file == null) {
+    	alert("파일을 선택해주세요.");
+    	return false;
+    } else if (!csvcheckFileType(file)) {
+    	alert("csv 파일만 업로드 가능합니다.");
+    	 $('#fileUpDownCsv').val(''); 
+  		 $(".fileUpDownCsv-name").val('');
+    	return false;
+    }
+
+    if (confirm("업로드 하시겠습니까?")) {
+     
+    	var options = {
+
+	        success : function(data) {
+	            	  console.log(data);
+	          		  alert("모든 데이터가 업로드 되었습니다.");
+	          		  
+	          		  //파일, 파일이름 삭제
+	          		 $('#fileUpDownCsv').val(''); 
+	          		 $(".fileUpDownCsv-name").val('');
+	          		  
+	          		  console.log("에이젝스 결과 확인 : " + data.fileNm);
+	          		  console.log("에이젝스 결과 확인 : "+ data.filePath);
+	          		  },
+	        type : "POST"
+      };
+    
+      $("#fileUpDownCsvForm").ajaxSubmit(options);
+      
+      
+      	
+		//submit 진행
+    	/*
+      	$("#fileUpDownCsvForm").submit();
+      	alert("확인확인");
+      	*/
+    }//if confirm
+  }
 
 
 
