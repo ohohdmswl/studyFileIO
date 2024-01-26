@@ -25,11 +25,11 @@
 <title>Insert title here</title>
 </head>
 <body>
-
-header
-
+	<div class ="overlay hidden"></div>
 	<div id = "cont">
 	<!-- flex -->
+	
+	
 		<div id="imageDiv">
 			<img src="${pageContext.request.contextPath}/images/egovframework/pagingExcel/vase.png" style="width: 4rem; height: 4rem;" />
 		</div>

@@ -59,6 +59,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -1044,12 +1045,9 @@ public class PagingExcel {
 	}
 	
 	
-	
-	
 	//openCSV 사용해서 csv 읽기
     public static List<String[]> readDataFromCsv(String filePath) throws IOException {
 
-    	
     		//csv 한글 꺠짐
 //			CSVReader reader = new CSVReader(new FileReader(filePath));
     		//csv 한글 꺠짐 방지 - 한글처리
@@ -1075,9 +1073,6 @@ public class PagingExcel {
 				System.out.println("readAll  : " + Arrays.toString(data));
 			}
 			*/
-			
-		    
-
 			
 			
 			//String []로 받기, reader.readNext
@@ -1117,5 +1112,24 @@ public class PagingExcel {
     
     }
 	
+    //-----------------
 
+	@RequestMapping(value = "/pagingExcelBoardWrite.do", method = RequestMethod.POST)
+	public String BoardWriteView(@ModelAttribute("pagingExcelVO") PagingExcelVO pagingExcelVO, BindingResult bindingResult, ModelMap model) throws Exception {
+		logger.info("대체 왜 : " + pagingExcelVO);
+		logger.info("대체 왜 22: " + pagingExcelVO.getPageIndex());
+	
+		//게시판 종류 조회
+//		List<PagingExcelVO> pagingExcelVO = pagingExcelService.selectmultibbsAllNm();
+//		model.addAttribute("pagingExcelVO", pagingExcelVO);
+//		
+//		model.addAttribute("pagingExcelVO", pagingExcelVO);
+		
+		return "board/boardWrite";
+	}
+    
+    
+    
+    
+    
 }

@@ -8,6 +8,13 @@
 </head>
 
 <body>
+<%
+          Throwable ex = (Throwable)request.getAttribute("exception");
+          ex.printStackTrace();
+%>
+
+${exception.message}
+
     <spring:message code='fail.common.sql' />
 </body>
 </html>

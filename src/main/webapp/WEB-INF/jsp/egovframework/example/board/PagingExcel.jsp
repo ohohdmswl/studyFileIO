@@ -10,30 +10,11 @@
 		<!-- //imageDiv -->
 <!-- 	<div id="flexDiv"> -->
 	
-	
+		
 		<div id="pageTitle">
 			<p class="pageTitle">HELLO</p>
 		</div>
 		<!-- pageTitle -->
-	
-		<div id="firstDiv">
-			<div class="excelDown" onclick="excelDownload1()">
-				<p>엑셀 다운로드1</p>
-			</div>
-			<div class="excelDown" onclick="excelDownload2()">
-				<p>엑셀 다운로드2</p>
-			</div>
-			<div class="excelDown" onclick="excelDownload3()">
-				<p>엑셀 다운로드3</p>
-			</div>
-			<div class="excelDown" onclick="excelDownload4()">
-				<p>엑셀 다운로드4</p>
-			</div>
-			<div class="excelDown" onclick="excelDownload5()">
-				<p>엑셀 다운로드5</p>
-			</div>
-		</div>
-		<!--//firstDiv -->
 		
 		<div id="secondDiv">
 			<div id="fileDiv">
@@ -109,7 +90,7 @@
 		
 		<form id = "boardForm" name="boardForm" method="post">
 			<input type="hidden" id="pageIndex" name="pageIndex" value="" /> 
-			<input type="hidden" id="board_no" name="board_no" /> 
+			<input type="hidden" id="board_no" name="board_no" value="" /> 
 <!-- 			<input type="hidden" id="pageUnit" name="pageUnit" value="" />  -->
 		
 			<!-- fivethDiv -->
@@ -132,45 +113,52 @@
 			</div>
 			<!-- //fivethDiv -->
 			
+			<div id="btnDiv">
+				<div class='excelDownBtn' onclick=''><p>엑셀 다운로드</p></div>
+<!-- 				<div class='boardWrite' id="boardWriteBtn" onclick="fnWrite()"><p>글작성</p></div> -->
+				<div class='boardWrite' id="boardWriteBtn" onclick=""><p>글작성</p></div>
+<!-- 				<a class='boardWrite' id="boardWriteBtn" href="javascript:fnWrite();"><p>글작성</p></a> -->
+				
+			</div>
+			
 			<!-- sixthDiv -->
 			<div id="sixthDiv">
-				<div class="excelDownBtn" onclick="excelDownload()"><p>엑셀 다운로드</p></div>
 			</div>
 			<!-- //sixthDiv -->
 		</form>
 		<!-- //boardForm -->
 		
 		
-		<!-- 액샐 다운로드 모덜 -->
+		<!-- 액샐 다운로드 모달 -->
 		<div class="modal excelDownModal hidden" id="excelDownModal">
 			
 			<div class="modalTitle">
-				<img id ="modalCloseBtn" alt="" src="${pageContext.request.contextPath}/images/egovframework/pagingExcel/Xicon2.png">
-				<h3>엑셀 다운로드</h3>
+				<img id ="modalCloseBtn" class="modalClose" alt="" src="${pageContext.request.contextPath}/images/egovframework/pagingExcel/Xicon2.png">
+				<span>엑셀 다운로드 💾</span>
 			</div>
 			<!-- 다운 버튼 모음 -->
-			<div>
-				<div class="excelDown" onclick="excelDownload1()">
+			<div id ="downBtnAll">
+				<div class="excelDown modalEd" onclick="excelDownload1()">
 					<p>엑셀 다운로드1</p>
 				</div>
-				<div class="excelDown" onclick="excelDownload2()">
+				<div class="excelDown modalEd" onclick="excelDownload2()">
 					<p>엑셀 다운로드2</p>
 				</div>
-				<div class="excelDown" onclick="excelDownload3()">
+				<div class="excelDown modalEd" onclick="excelDownload3()">
 					<p>엑셀 다운로드3</p>
 				</div>
-				<div class="excelDown" onclick="excelDownload4()">
+				<div class="excelDown modalEd" onclick="excelDownload4()">
 					<p>엑셀 다운로드4</p>
 				</div>
-				<div class="excelDown" onclick="excelDownload5()">
+				<div class="excelDown modalEd" onclick="excelDownload5()">
 					<p>엑셀 다운로드5</p>
 				</div>
 			</div>
 			<!-- //다운 버튼 모음 -->
+			<button type="button" id="modalCloseBtn2" class="modalClose modalCloseBtn2">닫기</button>
 			
-			<button class="" id="modalCloseBtn" type="button" onclick="d">닫기</button>
 		</div>
-		
+		<!-- //액샐 다운로드 모달 -->
 		
 	</div>
 	<!-- //flex -->
@@ -191,10 +179,36 @@
 
 $(document).ready(function(){
     
+	//페이지네이션
 	boardPage();
 	
 // 	selectfileList();
+	
+	//모달
+	showhideModal();
+	
+	
+	
+    $("#boardWriteBtn").click(function() {
+        fnWrite();
+    });
 });
+
+
+/*모달*/
+function showhideModal() {
+	// 	e.preventDefault();	//Anchor 태그의 기본 동작(hash link)을 차단
+	
+	$('.excelDownBtn').click(function name() {
+		$('#excelDownModal').removeClass('hidden');
+		$('.overlay').removeClass('hidden');
+	});
+	
+	$('.modalClose').click(function name() {
+		$('#excelDownModal').addClass('hidden');
+		$('.overlay').addClass('hidden');
+	})
+}
 
 
 
@@ -235,7 +249,7 @@ function boardPage(pnum) {
 			var pagination = "";
 			
 			//엑셀 다운로드 버튼(게시글 하단)
-			pagination += "<div class='excelDownBtn' onclick='excelDownload()'><p>엑셀 다운로드</p></div>";
+// 			pagination += "<div class='excelDownBtn' onclick=''><p>엑셀 다운로드</p></div>";
 			
 			//페이지네이션 변수, div
 			pagination += "<div class='paging_area pagination p1'  id='boardPagination'>";
@@ -305,7 +319,16 @@ function fnDetail(board_no){
 	$("#boardForm").attr({"action": "<c:out value='${pageContext.request.contextPath}/board/pagingExcelBoardDetail.do'/>", "method": "post"}).submit();
 }
 
+function fnWrite(){
+	
+	
+	
+	$("#boardForm").attr("enctype", "");
+	$("#boardForm").attr({"action": "<c:out value='${pageContext.request.contextPath}/board/pagingExcelBoardWrite.do'/>", "method": "post"}).submit();
 
+// 	 location.href = "/board/pagingExcelBoardWrite.do";
+
+}
 
 
 /**
@@ -565,7 +588,7 @@ function excelDownload1() {
 	alert("함수 실행 확인@@");
 
 		$.ajax({
-		url: "${pageContext.request.contextPath}/pagingExcelBoardDownload.do",
+		url: "${pageContext.request.contextPath}/board/pagingExcelBoardDownload.do",
 		method:"POST",
 		data:{},
 		success:function(result){
@@ -662,7 +685,7 @@ function excelDownload2() {
 	alert("함수 실행 확인2@@");
 	
 		$.ajax({
-		url: "${pageContext.request.contextPath}/pagingExcelBoardDownload.do",
+		url: "${pageContext.request.contextPath}/board/pagingExcelBoardDownload.do",
 		method:"POST",
 		data:{},
 		success:function(result){
@@ -765,7 +788,7 @@ function excelDownload3() {
 	alert("함수 실행 확인3@@");
 	
 		$.ajax({
-		url: "${pageContext.request.contextPath}/pagingExcelBoardDownload3.do",
+		url: "${pageContext.request.contextPath}/board/pagingExcelBoardDownload3.do",
 		method:"POST",
 		data:{},
 		success:function(result){
@@ -915,7 +938,7 @@ function excelDownload4() {
 	alert("공통화@!@@@@");
 	
 		$.ajax({
-		url: "${pageContext.request.contextPath}/pagingExcelBoardDownload3.do",
+		url: "${pageContext.request.contextPath}/board/pagingExcelBoardDownload3.do",
 		method:"POST",
 		data:{},
 		success:function(result){
@@ -949,7 +972,7 @@ function excelDownload5() {
 	console.log("헤더 배열 확인 : " + headColumns);
 	
 		$.ajax({
-		url: "${pageContext.request.contextPath}/pagingExcelBoardDownloadPoi.do",
+		url: "${pageContext.request.contextPath}/board/pagingExcelBoardDownloadPoi.do",
 		method:"POST",
 		data:{headColumns : headColumns},	//헤더값을 컨트롤러로 전달
 		success:function(result){

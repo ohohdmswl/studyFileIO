@@ -9,5 +9,13 @@
 
 <body>
     <spring:message code='fail.common.msg' />
+    
+    <%
+          Throwable ex = (Throwable)request.getAttribute("exception");
+          ex.printStackTrace();
+%>
+
+${exception.message}
+    
 </body>
 </html>

@@ -105,4 +105,7 @@
     <!-- resources 매핑 -->
     <mvc:resources mapping="/resources/**" location="/resources/"/>
     
+    
+    
+    
 </beans>

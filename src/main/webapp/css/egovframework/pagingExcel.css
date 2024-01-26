@@ -108,17 +108,24 @@ table{
 
 .excelDown  {
 	background: #BBC7B9;
-	border-radius : 5px;
-	width: 100px;
+	border-radius : 10px;
+/* 	width: 100px;  */
+	width: 30%; 
 	height: 35px;
+	
+	
 	text-align: center;
 	font-weight: bold;
 /* 	float: right; */
-	font-size: 15px;
-	margin-left: 15px;
+	font-size: 11px;
+/* 	margin: 10px; */
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.excelDown > p {
+	font-size: 12px;
 }
 
 .excelDownBtn  {
@@ -128,13 +135,28 @@ table{
 	height: 35px;
 	text-align: center;
 	font-weight: bold;
-	float: right;
+	float: left;
 	font-size: 15px;
-	margin-left: 15px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
+
+.boardWrite  {
+	background: #BBC7B9;
+	border-radius : 5px;
+	width: 100px;
+	height: 35px;
+	text-align: center;
+	font-weight: bold;
+	float: right;
+	font-size: 15px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+
 
 #secondDiv {
 	width: 100%;
@@ -343,50 +365,118 @@ p, li, a{
 
 /*모달*/
 .modal {
-	/*
-	position: absolute;
-	width: 300px;
-	height: 300px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: gray;
-	border-radius: 20px;
-	box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
-	*/
 	position: fixed;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	width: 400px;
-	height: 400px;
+	height: 200px;
 	background-color: #fcfcfc;
 	z-index: 1000;
 	border-radius: 25px;
-/* 	padding: 50px 50px; */
 	box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
 	display: flex;
 	flex-direction: column;
+	box-sizing: border-box;
 }
 
 .modalTitle {
 	width: 400px;
 	box-sizing: border-box;
 	padding: 10px 10px 10px 20px;
-	border-bottom: 2px solid black;
+/* 	border-bottom: 2px solid black; */
+/* 	margin-bottom: 10px; */
 }
 
-.modalTitle > p {
-	font-size: 30px;
+.modalTitle > span {
+	font-size: 20px;
 	font-family: 'Noto Sans KR', sans-serif;
 	white-space:nowrap;
+	border-bottom: 3px solid #556b2f;
+	padding-bottom: 1px;
 }
 
 #modalCloseBtn {
-	width: 30px;
-	height: 30px;
-/* 	display:  */
+	width: 20px;
+	height: 20px;
 	float: right;
+}
+
+:root {
+  --button-color: #ffffff;
+  --button-bg-color: #0d6efd;
+  --button-hover-bg-color: #025ce2;
+}
+
+
+
+#modalCloseBtn2{
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	
+	  background: var(--button-bg-color);
+  color: var(--button-color);
+  
+  margin: 0;
+  padding: 0.5rem 1rem;
+  
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: center;
+  text-decoration: none;
+	
+  border: none;
+  border-radius: 0 0 25px 25px;
+  
+  display: inline-block;
+  width: auto;
+  
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  
+  cursor: pointer;
+  
+  transition: 0.5s;
+  
+}
+
+button.modalCloseBtn2 {
+/*   --button-bg-color: #dc3545; */
+/*   --button-hover-bg-color: #c82333; */
+
+/*   --button-bg-color: #28a745; */
+/*   --button-hover-bg-color: #218838; */
+
+  --button-bg-color: #8DA788;
+/*   --button-hover-bg-color: #218838; */
+}
+
+.modalEd {
+	margin-bottom: 10px;
+}
+
+.hidden {
+	display: none;
+}
+
+#downBtnAll {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px 5%;
+	padding: 10px 10px 10px 10px;
+}
+
+.overlay {
+	top: 0px;
+    right: 0px;
+	position: fixed;
+	z-index: 100;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.);
+	backdrop-filter: blur(10px);
+	transition: all 0.3s;
 }
 
 

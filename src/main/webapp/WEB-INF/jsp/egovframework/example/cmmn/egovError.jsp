@@ -7,7 +7,14 @@
 <title>Error</title>
 </head>
 
+
 <body>
+<%
+          Throwable ex = (Throwable)request.getAttribute("exception");
+          ex.printStackTrace();
+%>
+
+${exception.message}
     <spring:message code='fail.common.msg' />
 </body>
 </html>
