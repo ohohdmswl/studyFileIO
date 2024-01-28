@@ -480,6 +480,81 @@ button.modalCloseBtn2 {
 }
 
 
+/*board Write*/
+
+input:focus {
+	outline: none; /* outline 테두리 없애기 */
+} 
+
+#titleDiv {
+	border-radius: 10px;
+	height: 40px;
+	width: 100%;
+	border: 2px solid black;  
+	margin-bottom: 10px; 
+}
+
+#board_title {
+	height: 38px;
+	width: 100%;
+	border: none;
+	background: transparent;
+	
+}
+
+
+#contDiv {
+		border-radius: 10px;
+	height: 800px;
+	width: 100%;
+	border: 2px solid black; 
+	margin-bottom: 10px; 
+}
+
+#board_cont{
+		width: 100%;
+		height: 800px;
+	border: none;
+	background: transparent;
+	outline: none;
+}
+
+#filesDiv {
+		border-radius: 10px;
+	height: 200px;
+	width: 100%;
+	border: 2px solid black; 
+	margin-bottom: 10px; 
+}
+
+#fileTitle {
+			border-radius: 10px;
+	height: 40px;
+	width: 100%;
+	border: 2px solid black; 
+	margin-bottom: 10px; 
+}
+
+#filesListDiv {
+			border-radius: 10px;
+	height: 100px;
+	width: 100%;
+	border: 2px solid black; 
+	margin-bottom: 10px; 
+	
+}
+
+#files {
+	height: 30px;
+	width: 100%;
+	border: 2px solid black; 
+	
+}
+
+/*board view*/
+
+
+
 .w10{width: 10% !important}
 .w20{width: 20% !important}
 .w30{width: 30% !important}

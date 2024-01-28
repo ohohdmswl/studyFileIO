@@ -115,10 +115,7 @@
 			
 			<div id="btnDiv">
 				<div class='excelDownBtn' onclick=''><p>엑셀 다운로드</p></div>
-<!-- 				<div class='boardWrite' id="boardWriteBtn" onclick="fnWrite()"><p>글작성</p></div> -->
-				<div class='boardWrite' id="boardWriteBtn" onclick=""><p>글작성</p></div>
-<!-- 				<a class='boardWrite' id="boardWriteBtn" href="javascript:fnWrite();"><p>글작성</p></a> -->
-				
+				<div class='boardWrite' id="boardWriteBtn" onclick="fnWrite()"><p>글작성</p></div>
 			</div>
 			
 			<!-- sixthDiv -->
@@ -188,10 +185,6 @@ $(document).ready(function(){
 	showhideModal();
 	
 	
-	
-    $("#boardWriteBtn").click(function() {
-        fnWrite();
-    });
 });
 
 
@@ -320,14 +313,8 @@ function fnDetail(board_no){
 }
 
 function fnWrite(){
-	
-	
-	
 	$("#boardForm").attr("enctype", "");
 	$("#boardForm").attr({"action": "<c:out value='${pageContext.request.contextPath}/board/pagingExcelBoardWrite.do'/>", "method": "post"}).submit();
-
-// 	 location.href = "/board/pagingExcelBoardWrite.do";
-
 }
 
 

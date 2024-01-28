@@ -27,7 +27,6 @@
 <body>
 	<div class ="overlay hidden"></div>
 	<div id = "cont">
-	<!-- flex -->
 	
 	
 		<div id="imageDiv">
@@ -36,6 +35,7 @@
 		<!-- //imageDiv -->
 		
 		<div id="flexDiv">
+		<!-- flex -->
 		
 		<div id="menuDiv">
 			<ul class="menuList">
