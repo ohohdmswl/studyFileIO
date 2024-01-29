@@ -209,7 +209,7 @@ table{
 	margin-block-end : 0;
 }
 
-#fileDiv label, #csvFileDiv label, #fileUpDiv label, .downBTN, #fileUpCsvDiv label, .downCsvBTN{
+#fileDiv label, #csvFileDiv label, #fileUpDiv label, .downBTN, #fileUpCsvDiv label, .downCsvBTN, #fileTitle > label{
 	background: #999999;
 	border-radius : 5px;
 	width: 80px;
@@ -225,7 +225,7 @@ table{
 	
 }
 
-#excelFile, #csvFile, #fileUpDown, #fileUpDownCsv{
+#excelFile, #csvFile, #fileUpDown, #fileUpDownCsv, #board_file{
 	display: none;
 }
 
@@ -490,8 +490,10 @@ input:focus {
 	border-radius: 10px;
 	height: 40px;
 	width: 100%;
-	border: 2px solid black;  
+/* 	border: 2px solid black;   */
+	margin-top: 10px;
 	margin-bottom: 10px; 
+	background: #E8EDD6;
 }
 
 #board_title {
@@ -499,21 +501,25 @@ input:focus {
 	width: 100%;
 	border: none;
 	background: transparent;
-	
+	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: bold;
+	padding: 0 20px 0 20px;
+	box-sizing: border-box;
 }
 
 
 #contDiv {
 		border-radius: 10px;
-	height: 800px;
+	height: 500px;
 	width: 100%;
-	border: 2px solid black; 
+	border: 3px solid #F0F1ED; 
 	margin-bottom: 10px; 
+	box-sizing: border-box;
 }
 
 #board_cont{
 		width: 100%;
-		height: 800px;
+		height: 500px;
 	border: none;
 	background: transparent;
 	outline: none;
@@ -521,9 +527,9 @@ input:focus {
 
 #filesDiv {
 		border-radius: 10px;
-	height: 200px;
+/* 	height: 180px; */
 	width: 100%;
-	border: 2px solid black; 
+/* 	border: 2px solid black;  */
 	margin-bottom: 10px; 
 }
 
@@ -531,25 +537,96 @@ input:focus {
 			border-radius: 10px;
 	height: 40px;
 	width: 100%;
-	border: 2px solid black; 
+/* 	border: 2px solid black;  */
 	margin-bottom: 10px; 
+	background: #E8EDD6;
+		font-family: 'Noto Sans KR', sans-serif;
+	font-weight: bold;
+	color: #6D6D6D;
+	box-sizing: border-box;
+	padding: 0 10px 0 10px;
+	 vertical-align : middle;
+	display: flex;
+	justify-content: space-between;
+    align-items: center;
+	
+}
+
+#fileTitle > span {
+	font-size: 15px;
+	
 }
 
 #filesListDiv {
 			border-radius: 10px;
-	height: 100px;
+	height: 130px;
 	width: 100%;
-	border: 2px solid black; 
+/* 	border: 2px solid black;  */
 	margin-bottom: 10px; 
-	
 }
 
 #files {
 	height: 30px;
 	width: 100%;
-	border: 2px solid black; 
+/* 	border: 2px solid black;  */
 	
 }
+
+.fileitems {
+	border-radius: 10px;
+	height: 30px;
+	width: 100%;
+	margin-bottom: 10px; 
+	background: #f3fae3;
+		display: flex;
+	justify-content: space-between;
+    align-items: center;	
+    	box-sizing: border-box;
+	padding: 0 10px 0 10px;
+}
+
+.fileDelBtn {
+	float: right;
+	height: 20px;
+	width: 50px;
+	border: none;
+	background: #ada4a1;
+	border-radius: 5px;
+	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: bold;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+	
+}
+
+/*botton*/
+.saveBtn {
+	border-radius: 10px;
+	height: 40px;
+	width: 100px;
+	background: #74A68A;
+	float: right;
+	border: none;
+			font-family: 'Noto Sans KR', sans-serif;
+	font-weight: bold;
+	font-size: 15px;
+	color: white;
+}
+
+.cancelBtn {
+		border-radius: 10px;
+	height: 40px;
+	width: 100px;
+	background: #ABB0AD;
+	float: left;
+	border: none;
+			font-family: 'Noto Sans KR', sans-serif;
+	font-weight: bold;
+	color: white;
+}
+
+
 
 /*board view*/
 

@@ -43,7 +43,8 @@ public class PagingExcelVO extends SampleDefaultVO {
 	private String board_date;
 	private int board_pw;
 	private int board_hit;
-	private String[] board_file;
+//	private String[] board_file;
+	private String board_file;
 	
 	
 	public int getRownum() {
