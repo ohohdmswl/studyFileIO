@@ -626,10 +626,37 @@ input:focus {
 	color: white;
 }
 
-
+.updateBtn {
+	border-radius: 10px;
+	height: 40px;
+	width: 100px;
+	background: #ffb366;
+	float: right;
+	border: none;
+	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: bold;
+	font-size: 15px;
+	color: white;
+}
 
 /*board view*/
 
+#titleDiv {
+	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: bold;
+	color: #6D6D6D;
+	box-sizing: border-box;
+	padding: 0 10px 0 10px;
+}
+
+#extraDiv {
+	display: flex;
+	justify-content: space-between;
+}
+
+.extraData{
+	
+}
 
 
 .w10{width: 10% !important}

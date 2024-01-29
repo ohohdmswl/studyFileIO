@@ -96,6 +96,11 @@ public class PagingExcelDAO extends EgovAbstractMapper {
 		return selectOne("selectFileDownload", fileVO);
 	}
 
+	//게시글조회
+	public PagingExcelVO selectBoardDetail(PagingExcelVO pagingExcelVO) {
+		return selectOne("selectBoardDetail", pagingExcelVO);
+	}
+
 	
 	
 	

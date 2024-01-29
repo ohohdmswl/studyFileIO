@@ -372,7 +372,11 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
 	}
 	
 
-	
+	//게시글조회
+	@Override
+	public PagingExcelVO selectBoardDetail(PagingExcelVO pagingExcelVO) {
+		return pagingExcelDAO.selectBoardDetail(pagingExcelVO);
+	}
 	
 	
 	/**

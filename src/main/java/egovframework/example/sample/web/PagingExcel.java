@@ -177,8 +177,12 @@ public class PagingExcel {
 		
 		logger.info("detail chk : " + pagingExcelVO);
 
+		PagingExcelVO pagingExcelInfo = pagingExcelService.selectBoardDetail(pagingExcelVO);
+		logger.info("pagingExcelInfo chk : " + pagingExcelInfo);
 		
-//		model.addAttribute("", );
+		
+		
+		model.addAttribute("pagingExcelInfo",pagingExcelInfo );
 
 		
 		return "board/boardDetail";
@@ -1131,6 +1135,13 @@ public class PagingExcel {
 		return "board/boardWrite";
 	}
     
+	
+	
+	
+	
+	
+	
+	
     
     
     
