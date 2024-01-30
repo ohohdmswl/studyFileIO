@@ -69,34 +69,11 @@ function fileUpload(files) {
         selectedFiles.push(files[i]);
         console.log('File ' + (i + 1) + ' : ', files[i].name, files[i].size, files[i].type);
         
-//         var item = document.createElement('div');
-//         item.id= "files" + [i];
-//         	div.id = 'ss'; // 아이디 추가div.classname = 'a'; // 클래스 추가
-        
-//         var fileName = document.createTextNode(files[i].name);
-//         var deleteButton = document.createElement('button');
-        
-        
         var html = "<div id='item"+i+"' class='fileitems'>";
 		html += "<span>"+files[i].name + "</span>";
 		html += "<button class='fileDelBtn' type='button' onclick='fndelFile(" + i + ")'>삭제</button>";
 		html += "</div>"
-        
-        
-        
-        
-//         deleteButton.addEventListener('click', function (event) {
-//             item.remove();
-//             event.preventDefault();
-//             deleteFile(files[i]);
-//         });
-
         console.log("지금 selectedFiles 확인 : " + selectedFiles);
-        
-//         deleteButton.innerText = "X";
-//         item.appendChild(fileName);
-//         item.appendChild(deleteButton);
-//         fileList.appendChild(item);
 
 		$("#fileList").append(html);
         console.log("지금 fileList 확인 : " + fileList);
@@ -127,54 +104,39 @@ function fndelFile(fileIndex) {
 
     $('#board_file')[0].files = dataTransfer.files; // 제거 처리된 FileList를 돌려줌
 	
-    
     console.log(dataTransfer.files);
     
 }
 
-
-//선택된 파일 목록에서 특정 파일을 삭제하고, 업데이트된 목록을 파일 입력 요소에 반영하여 파일 목록을 갱신
-/*function deleteFile(deleteFile) {
-    var inputFile = document.querySelector('input[name="board_file"]');
-    console.log("d지금 inputFile 확인 : " + inputFile);
-
-    
-    var dataTransfer = new DataTransfer();
-    
-    //deleteFile과 일치하지 않는 파일들만을 남기고, 배열을 업데이트
-    selectedFiles = selectedFiles.filter(function(file) {
-        return file !== deleteFile;
-    });
-    console.log("d지금 selectedFiles 확인 : " + selectedFiles);
-
-    //업데이트된  selectedFiles 배열을 돌며 각 파일을 dataTransfer에 추가
-    selectedFiles.forEach(function(file) {
-        dataTransfer.items.add(file);
-    });
-    console.log("d지금 dataTransfer.items 확인 : " + dataTransfer.items);
-
-    //파일 입력 요소의 `files` 속성에 수정된 파일 목록을 할당하여 화면에 반영
-    inputFile.files = dataTransfer.files;
-    console.log("d지금 inputFile 확인 : " + inputFile.files);
+function fnWrite(){
+	
+	/*
+	if(confirm("저장 하시겠습니까?")){
+		oEditors.getById["bbs_cn"].exec("UPDATE_CONTENTS_FIELD", []);
+		
+		<c:choose>
+		<c:when test="${result.bbs_sn gt 0}">
+		$("#boardWriteForm").attr({"action": "<c:out value='${pageContext.request.contextPath}/board/pagingExcelBoardWrite.do'/>"
+			, "method": "post"}).submit();
+		</c:when>
+		<c:otherwise>
+		$("#frm").attr({"action": "<c:out value='${pageContext.request.contextPath}/mng/bbsFaq/faqRegist.do?menuCode=${param.menuCode}'/>"
+			, "method": "post"}).submit();
+		</c:otherwise>
+		</c:choose>
+	}
+	*/
+	
+	if(confirm("저장 하시겠습니까?")){
+		$("#boardWriteForm").attr({"action": "<c:out value='${pageContext.request.contextPath}/board/pagingExcelBoardWrite.do'/>"
+			, "method": "post"}).submit();
+	}	
+	
+	
+	
 }
-*/
 
-function deleteFile(fileNum) {
-    var dataTransfer = new DataTransfer();
 
-    var files = $('#file')[0].files; // 사용자가 입력한 파일을 변수에 할당
-
-    var fileArray = Array.from(files); // 변수에 할당된 파일을 배열로 변환(FileList -> Array)
-
-    fileArray.splice(fileNum, 1); // 해당하는 index의 파일을 배열에서 제거
-
-    fileArray.forEach(function (file) {
-        dataTransfer.items.add(file);
-    });
-    // 남은 배열을 dataTransfer로 처리(Array -> FileList)
-
-    $('#file')[0].files = dataTransfer.files; // 제거 처리된 FileList를 돌려줌
-}
 
 
 </script>

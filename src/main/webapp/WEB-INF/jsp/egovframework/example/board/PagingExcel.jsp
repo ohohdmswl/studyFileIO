@@ -115,7 +115,7 @@
 			
 			<div id="btnDiv">
 				<div class='excelDownBtn' onclick=''><p>엑셀 다운로드</p></div>
-				<div class='boardWrite' id="boardWriteBtn" onclick="fnWrite()"><p>글작성</p></div>
+				<div class='boardWrite' id="boardWriteBtn" onclick="fnWriteView()"><p>글작성</p></div>
 			</div>
 			
 			<!-- sixthDiv -->
@@ -312,9 +312,9 @@ function fnDetail(board_no){
 	$("#boardForm").attr({"action": "<c:out value='${pageContext.request.contextPath}/board/pagingExcelBoardDetail.do'/>", "method": "post"}).submit();
 }
 
-function fnWrite(){
+function fnWriteView(){
 	$("#boardForm").attr("enctype", "");
-	$("#boardForm").attr({"action": "<c:out value='${pageContext.request.contextPath}/board/pagingExcelBoardWrite.do'/>", "method": "post"}).submit();
+	$("#boardForm").attr({"action": "<c:out value='${pageContext.request.contextPath}/board/pagingExcelBoardWriteView.do'/>", "method": "post"}).submit();
 }
 
 
