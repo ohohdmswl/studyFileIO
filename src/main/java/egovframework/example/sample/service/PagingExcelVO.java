@@ -15,6 +15,8 @@
  */
 package egovframework.example.sample.service;
 
+import java.util.Arrays;
+
 /**
  * @Class Name : SampleVO.java
  * @Description : SampleVO Class
@@ -43,8 +45,8 @@ public class PagingExcelVO extends SampleDefaultVO {
 	private String board_date;
 	private int board_pw;
 	private int board_hit;
-//	private String[] board_file;
-	private String board_file;
+//	private byte[] board_file;
+//	private String board_file;
 	public int getRownum() {
 		return rownum;
 	}
@@ -93,18 +95,18 @@ public class PagingExcelVO extends SampleDefaultVO {
 	public void setBoard_hit(int board_hit) {
 		this.board_hit = board_hit;
 	}
-	public String getBoard_file() {
-		return board_file;
-	}
-	public void setBoard_file(String board_file) {
-		this.board_file = board_file;
-	}
 	@Override
 	public String toString() {
 		return "PagingExcelVO [rownum=" + rownum + ", board_no=" + board_no + ", board_title=" + board_title
 				+ ", board_cont=" + board_cont + ", board_writer=" + board_writer + ", board_date=" + board_date
-				+ ", board_pw=" + board_pw + ", board_hit=" + board_hit + ", board_file=" + board_file + "]";
+				+ ", board_pw=" + board_pw + ", board_hit=" + board_hit + "]";
 	}
+
+	
+	
+	
+
+	
 	
 	
 

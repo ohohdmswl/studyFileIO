@@ -85,6 +85,12 @@ public interface PagingExcelService {
 
 	//게시글 조회
 	PagingExcelVO selectBoardDetail(PagingExcelVO pagingExcelVO);
+
+	//게시글 파일 등록
+	Map<String, Object> insertFiles(MultipartHttpServletRequest request, int boardNo);
+
+	//게시글 번호 조회
+	int selectBoardNo();
 	
 	
 

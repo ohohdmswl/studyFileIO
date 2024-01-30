@@ -101,6 +101,16 @@ public class PagingExcelDAO extends EgovAbstractMapper {
 		return selectOne("selectBoardDetail", pagingExcelVO);
 	}
 
+	//게시글 번호 조회
+	public int selectBoardNo() {
+		return selectOne("selectBoardNo");
+	}
+
+	//게시글 파일 저장
+	public int insertFilesUp(FileVO fileVO) {
+		return insert("insertFilesUp", fileVO);
+	}
+
 	
 	
 	

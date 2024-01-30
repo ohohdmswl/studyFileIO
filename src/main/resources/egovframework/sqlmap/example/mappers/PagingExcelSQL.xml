@@ -107,10 +107,47 @@
 	</select>
 	
 	<select id="selectBoardDetail" parameterType="egovframework.example.sample.service.PagingExcelVO" resultType="egovframework.example.sample.service.PagingExcelVO">
-		SELECT		*
+		SELECT		board_writer
+					,board_title
+					,board_pw
+					,board_no
+					,board_hit
+					,board_date
+					,board_cont
 		FROM		tb_board
 		WHERE		board_no = #{board_no}
 	</select>
+	
+	<select id="selectBoardNo" resultType="int">
+			select nextval('BOARD_NO_SEQ')
+	</select>
+	
+	
+	
+	<insert id="insertFilesUp" parameterType="egovframework.example.sample.service.FileVO">
+       
+       INSERT INTO tb_board_file (
+               board_no, 
+               file_no, 
+               original_name, 
+               file_name, 
+               file_extension, 
+               reg_id, 
+               reg_date, 
+               file_path
+               ) 
+               VALUES 
+               (
+			#{board_no},					
+               (SELECT COALESCE(MAX(file_no),0)+1 FROM tb_board_file WHERE board_no = #{board_no}), 
+               #{original_name},
+               #{file_name},
+               #{file_extension},
+                'writer',
+                 now()::timestamp,
+               #{file_path}
+               )
+    </insert>
 	
 	
 </mapper>

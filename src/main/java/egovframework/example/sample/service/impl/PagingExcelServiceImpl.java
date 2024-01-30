@@ -292,8 +292,8 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
 		//파일 업다운
 //		List<MultipartFile> fileList = multipartHttpServletRequest.getFiles("fileUpDown");
 		
-		//opencsv 파일 업다운
-		List<MultipartFile> fileList = multipartHttpServletRequest.getFiles("fileUpDownCsv");
+		//파일 업다운
+		List<MultipartFile> fileList = multipartHttpServletRequest.getFiles("fileUpDown");
 		for(int i=0; i<fileList.size(); i++) {
 			MultipartFile file = fileList.get(i);
 			String fileName = file.getOriginalFilename();
@@ -378,6 +378,85 @@ public class PagingExcelServiceImpl extends EgovAbstractServiceImpl implements P
 		return pagingExcelDAO.selectBoardDetail(pagingExcelVO);
 	}
 	
+	//게시글 파일 등록(다중등록)
+	@Override
+	public Map<String, Object> insertFiles(MultipartHttpServletRequest request, int boardNo) {
+
+		//날짜 포멧(제목에 붙일)
+		Date now = new Date();
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd-HHmmss");
+		String nowTime1 = sdf1.format(now);
+		logger.info(nowTime1);
+		logger.info("insertFiles @@@");
+		
+		List<FileVO> listfile = new ArrayList<>();
+		
+		//파일 업다운
+		//List<MultipartFile> fileList = multipartHttpServletRequest.getFiles("board_file");
+		
+		List<MultipartFile> fileList = request.getFiles("board_file");
+		for(int i=0; i<fileList.size(); i++) {
+			MultipartFile file = fileList.get(i);
+			String fileName = file.getOriginalFilename();
+			logger.info("파일뽑기 fileList : " + fileName);
+		}
+		
+		Iterator<String> files = request.getFileNames();	//출력값 : fileUpDown
+		int resultcval = 0;
+		
+		for (MultipartFile mf : fileList) {
+			logger.info("for문 확인");
+			
+			if (!fileList.isEmpty()) {
+				logger.info("if문 확인");
+				FileVO fileVO = new FileVO();
+				
+				fileVO.setBoard_no(boardNo); 
+				fileVO.setOriginal_name(mf.getOriginalFilename()); 
+				
+				int idx = fileVO.getOriginal_name().lastIndexOf(".");
+				String fileNm = fileVO.getOriginal_name().substring(0,idx);
+				String fileExten = fileVO.getOriginal_name().substring(fileVO.getOriginal_name().lastIndexOf(".")+1);
+				String saveFileNm = fileNm + "_" +  nowTime1 +"." + fileExten;
+				
+				fileVO.setFile_name(saveFileNm);
+				
+				fileVO.setFile_extension(fileExten);
+				String filepath = "C:\\Upload\\multifile\\" + saveFileNm;	//저장장소
+				fileVO.setFile_path(filepath);
+				
+				logger.info("넣은 값 확인 : " + fileVO);
+				listfile.add(fileVO);
+				
+				File orgFile = new File(filepath);
+				try {
+					mf.transferTo(orgFile);
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new RuntimeException("파일 전송 중 오류 발생: " + e.getMessage(), e);
+				}
+				resultcval += pagingExcelDAO.insertFilesUp(fileVO); 
+			}//if
+		}//for
+		
+		
+		logger.info("listfile 확인! : " + listfile);
+		logger.info("resultcval 확인! : " + resultcval);
+		
+		Map<String, Object> returnmap = new HashMap<String, Object>();
+		returnmap.put("listfile", listfile);
+		
+		
+		return returnmap;
+	}
+
+	//게시글 번호 조회
+	@Override
+	public int selectBoardNo() {
+		return pagingExcelDAO.selectBoardNo();
+	}
 	
 	/**
 	 * 글을 등록한다.

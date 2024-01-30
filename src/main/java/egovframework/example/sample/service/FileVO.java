@@ -12,10 +12,7 @@ public class FileVO {
 	private String reg_id;
 	private String reg_date;
 	private String file_path;
-	private String file_save_path; //안씀 나중에 지워라
-	
-	
-	
+	private int board_no;
 	public int getFile_group() {
 		return file_group;
 	}
@@ -58,27 +55,30 @@ public class FileVO {
 	public void setReg_date(String reg_date) {
 		this.reg_date = reg_date;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 	public String getFile_path() {
 		return file_path;
 	}
 	public void setFile_path(String file_path) {
 		this.file_path = file_path;
 	}
-	public String getFile_save_path() {
-		return file_save_path;
+	public int getBoard_no() {
+		return board_no;
 	}
-	public void setFile_save_path(String file_save_path) {
-		this.file_save_path = file_save_path;
+	public void setBoard_no(int board_no) {
+		this.board_no = board_no;
 	}
-	
 	@Override
 	public String toString() {
 		return "FileVO [file_group=" + file_group + ", file_no=" + file_no + ", original_name=" + original_name
 				+ ", file_name=" + file_name + ", file_extension=" + file_extension + ", reg_id=" + reg_id
-				+ ", reg_date=" + reg_date + ", file_path=" + file_path + ", file_save_path=" + file_save_path + "]";
+				+ ", reg_date=" + reg_date + ", file_path=" + file_path + ", board_no=" + board_no + "]";
 	}
+	
+	
+	
+
+	
+	
+	
 	
 }

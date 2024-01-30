@@ -3,6 +3,7 @@
 
 	<!-- 게시글 form -->
 	<form id="boardWriteForm" method="post" enctype="multipart/form-data">
+		<input type="hidden" id="board_no" name="board_no" value="0" /> 
 		<!-- 제목 -->
 		<div id="titleDiv">
 			<input type="text" id="board_title" name="board_title" placeholder="제목"/>
@@ -95,7 +96,7 @@ function fndelFile(fileIndex) {
     var fileArray = Array.from(files); // 변수에 할당된 파일을 배열로 변환(FileList -> Array)
     console.log(fileArray);
 
-    fileArray.splice(fileIndex, 1); // 해당하는 index의 파일을 배열에서 제거
+    fileArray.splice(fileIndex, 1); // 해당하는 index의 파일을 배열에서 제거 (제거하면서 인덱스가 바뀌어서 이런가본데)
 
     fileArray.forEach(function (file) {
         dataTransfer.items.add(file);

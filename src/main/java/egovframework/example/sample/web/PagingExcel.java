@@ -1144,12 +1144,33 @@ public class PagingExcel {
 	
 	@RequestMapping(value="/pagingExcelBoardWrite.do", method = RequestMethod.POST)
 	public String BoardWrite(@ModelAttribute("pagingExcelVO") PagingExcelVO pagingExcelVO, BindingResult bindingResult, ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response) throws Exception{
+//	public String BoardWrite(PagingExcelVO pagingExcelVO, ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response) throws Exception{
 
 		//BindingResult
 		//@ModelAttribute 적용한 PagingExcelVO에 board_no가 input hidden으로 되어있는 상태에서 submit되는데, "" String으로 넘어와서 미스타입에러 나서 예외처리위해 사용
 		//submit 안하고 redirect사용해도 되는데 그러면 페이지네이션 관련 파라미터를 전달할 방법이 따로 없어서 그냥 submit으로 진행
 		
 		logger.info("Write.do : " + pagingExcelVO + "pagingExcelVO.getPageIndex() : " + pagingExcelVO.getPageIndex());
+		logger.info("Write.do multifile : " + request.getFileMap());
+		logger.info("Write.do multifile : " + request.getFiles("board_file"));
+		
+		
+		List<MultipartFile> mFiles = request.getFiles("board_file");
+		for(MultipartFile mFile : mFiles) {
+			mFile.getSize();
+			logger.info("multifile getSize : " + mFile.getSize());
+			logger.info("multifile getSize : " + mFile.getName());
+			logger.info("multifile getSize : " + mFile.getOriginalFilename());
+			};
+		
+		
+			//1. 업로드
+			logger.info("@ boardWrite ++ 업로드 ++ submit @");
+			int boardNo = pagingExcelService.selectBoardNo();
+			Map<String, Object> resultdata = pagingExcelService.insertFiles(request, boardNo);
+			//업로드 정상동작 확인
+			logger.info("multifile resultdata : " + resultdata);
+			
 		
 		//게시판 종류 조회
 //		List<PagingExcelVO> pagingExcelVO = pagingExcelService.selectmultibbsAllNm();
