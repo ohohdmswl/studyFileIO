@@ -82,6 +82,9 @@ public interface PagingExcelService {
 
 	//다운로드 받을 파일 정보 조회
 	FileVO selectFileDownload(FileVO fileVO);
+
+	//게시글 조회
+	PagingExcelVO selectBoardDetail(PagingExcelVO pagingExcelVO);
 	
 	
 

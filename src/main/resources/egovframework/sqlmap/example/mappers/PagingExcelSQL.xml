@@ -106,4 +106,11 @@
 		WHERE 		file_group = #{file_group} AND file_no = #{file_no}
 	</select>
 	
+	<select id="selectBoardDetail" parameterType="egovframework.example.sample.service.PagingExcelVO" resultType="egovframework.example.sample.service.PagingExcelVO">
+		SELECT		*
+		FROM		tb_board
+		WHERE		board_no = #{board_no}
+	</select>
+	
+	
 </mapper>
